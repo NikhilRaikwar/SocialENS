@@ -97,6 +97,7 @@ export default function ProfilePage() {
                     {/* Avatar */}
                     <div className="relative group">
                       <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={avatarUrl}
                         alt="Profile"

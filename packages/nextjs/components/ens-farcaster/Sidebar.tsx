@@ -41,7 +41,7 @@ export const Sidebar = () => {
 
             {bio && (
               <p className="text-sm opacity-70 italic line-clamp-2 px-2 mb-4 leading-relaxed font-light">
-                "{bio}"
+                &quot;{bio}&quot;
               </p>
             )}
 
