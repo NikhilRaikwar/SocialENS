@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAccount, useEnsAvatar, useEnsName, useEnsText } from "wagmi";
+import { SuggestedUsers } from "./SuggestedUsers";
 
 export const Sidebar = () => {
   const { address } = useAccount();
@@ -79,7 +80,7 @@ export const Sidebar = () => {
           </Link>
         ))}
       </nav>
-
+      <SuggestedUsers />
       <div className="text-center text-[10px] opacity-20 font-mono tracking-widest hover:opacity-100 transition-opacity cursor-default">
         SOCIALENS v1.0 • SEPOLIA
       </div>
