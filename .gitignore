@@ -8,16 +8,42 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+yarn-error.log
 
 # eslint
 .eslintcache
 
 # misc
 .DS_Store
+*.log
 
 # IDE
 .vscode
 .idea
+*.swp
+*.swo
 
-# cli
+# build outputs
 dist
+.next
+out
+build
+
+# Environment variables (keep secrets safe!)
+.env
+.env.local
+.env*.local
+.env.production.local
+.env.development.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Testing
+coverage
+
+# OS
+Thumbs.db

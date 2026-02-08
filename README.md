@@ -1,83 +1,328 @@
-# 🏗 Scaffold-ETH 2
+# 🌐 SocialENS
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+<div align="center">
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+![SocialENS Banner](https://img.shields.io/badge/Social-ENS-blue?style=for-the-badge&logo=ethereum)
 
-> [!NOTE]
-> 🤖 Scaffold-ETH 2 is AI-ready! It has everything agents need to build on Ethereum. Check `.agents/`, `.claude/`, `.opencode` or `.cursor/` for more info.
+**The First Fully Decentralized Social Network Powered by ENS Text Records**
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+[![Built with Scaffold-ETH 2](https://img.shields.io/badge/Built%20with-Scaffold--ETH%202-blueviolet?style=flat-square)](https://scaffoldeth.io/)
+[![ENS Integration](https://img.shields.io/badge/ENS-Integrated-3498db?style=flat-square&logo=ethereum)](https://ens.domains/)
+[![Ethereum Sepolia](https://img.shields.io/badge/Network-Sepolia-yellow?style=flat-square)](https://sepolia.etherscan.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+[Live Demo](#-quick-start) • [Video Demo](#-demo) • [Documentation](#-how-it-works) • [Roadmap](#-roadmap)
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+</div>
 
-## Requirements
+---
 
-Before you begin, you need to install the following tools:
+## 🏆 ETH HACK MONEY 2026 Submission
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+This project is submitted for the **ENS Integration Prize** at ETH HACK MONEY 2026.
 
-## Quickstart
+### Prize Categories
+- 🎉 **Integrate ENS** - $3,500 (Split among qualifying projects)
+- 🥇 **Most Creative Use of ENS for DeFi** - $1,500
 
-To get started with Scaffold-ETH 2, follow the steps below:
+---
 
-1. Install dependencies if it was skipped in CLI:
+## ✨ What is SocialENS?
+
+SocialENS is a **100% on-chain social network** where all social data is stored directly in ENS text records. No databases, no backends, just pure blockchain-native social networking.
 
 ```
-cd my-dapp-example
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│   👤 User connects wallet with Sepolia ENS name                │
+│                           │                                     │
+│                           ▼                                     │
+│   ┌─────────────────────────────────────────┐                  │
+│   │         SocialENS App               │                  │
+│   │   • Read ENS name (useEnsName)          │                  │
+│   │   • Read text records (useEnsText)      │                  │
+│   │   • Write casts (setText)               │                  │
+│   └─────────────────────────────────────────┘                  │
+│                           │                                     │
+│                           ▼                                     │
+│   ┌─────────────────────────────────────────┐                  │
+│   │     ENS Public Resolver (Sepolia)       │                  │
+│   │   0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5              │
+│   │                                          │                  │
+│   │   Text Records:                          │                  │
+│   │   • social.casts → JSON array of posts  │                  │
+│   │   • social.following → JSON array       │                  │
+│   │   • description → Profile bio           │                  │
+│   └─────────────────────────────────────────┘                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🎯 Key Features
+
+| Feature | Description | ENS Integration |
+|---------|-------------|-----------------|
+| 🔐 **ENS-Gated Access** | Only users with Sepolia ENS names can access the app | `useEnsName` hook |
+| 📝 **On-Chain Casts** | Posts stored in ENS text records | `setText("social.casts", ...)` |
+| 👥 **On-Chain Following** | Social graph stored in ENS | `setText("social.following", ...)` |
+| 👤 **Portable Profiles** | Profile data in ENS text records | `description`, `avatar` records |
+| 💰 **Native Tipping** | Tip creators via ENS addresses | `useEnsAddress` for payments |
+| 📡 **Feed Discovery** | Uses `TextChanged` events | `getLogs` with event filtering |
+
+---
+
+## 🛠️ Technology Stack
+
+```
+Frontend:        Next.js 14 + TypeScript + TailwindCSS
+Blockchain:      Ethereum Sepolia Testnet
+Identity:        ENS (Ethereum Name Service)
+Wallet:          RainbowKit + wagmi v2
+Framework:       Scaffold-ETH 2
+Data Storage:    ENS Text Records (100% on-chain)
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- Yarn or npm
+- MetaMask or any Web3 wallet
+- Sepolia ENS name ([Register here](https://sepolia.app.ens.domains))
+- Sepolia testnet ETH ([Faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia))
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/ens-farcaster.git
+cd ens-farcaster
+
+# Install dependencies
 yarn install
-```
 
-2. Run a local network in the first terminal:
+# Copy environment template
+cp packages/nextjs/.env.example packages/nextjs/.env.local
 
-```
-yarn chain
-```
+# Add your RPC URL to .env.local
+# NEXT_PUBLIC_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_KEY
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
+# Start the development server
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+### Environment Variables
 
-Run smart contract test with `yarn hardhat:test`
+Create `packages/nextjs/.env.local`:
 
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
+```env
+# Required: Sepolia RPC URL
+NEXT_PUBLIC_SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_KEY
 
+# Optional: Alchemy API Key (backup RPC)
+NEXT_PUBLIC_ALCHEMY_API_KEY=your_alchemy_key
 
-## Documentation
+# Optional: WalletConnect Project ID
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_project_id
+```
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+---
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+## 📖 How It Works
 
-## Contributing to Scaffold-ETH 2
+### ENS Text Records Architecture
 
-We welcome contributions to Scaffold-ETH 2!
+```
+┌───────────────────────────────────────────────────────────────┐
+│                    yourname.eth (Sepolia)                     │
+├───────────────────────────────────────────────────────────────┤
+│                                                               │
+│  Text Record: "social.casts"                                  │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │ [                                                       │ │
+│  │   {                                                     │ │
+│  │     "id": 1707584400000,                               │ │
+│  │     "text": "GM! My first on-chain cast 🌐",           │ │
+│  │     "timestamp": 1707584400000,                        │ │
+│  │     "author": "yourname.eth",                          │ │
+│  │     "authorAddress": "0x..."                           │ │
+│  │   },                                                    │ │
+│  │   ...                                                   │ │
+│  │ ]                                                       │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│                                                               │
+│  Text Record: "social.following"                              │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │ ["vitalik.eth", "nick.eth", "brantly.eth"]             │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│                                                               │
+│  Text Record: "description"                                   │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │ "Web3 builder | ENS enthusiast | Building the future"  │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+```
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+### Code Examples
+
+#### Reading ENS Name (Identity Verification)
+```typescript
+import { useEnsName } from "wagmi";
+
+const { data: ensName } = useEnsName({ 
+  address, 
+  chainId: 11155111 // Sepolia
+});
+```
+
+#### Writing Casts to ENS Text Records
+```typescript
+import { namehash } from "viem";
+import { useWriteContract } from "wagmi";
+
+const node = namehash(ensName);
+await writeContractAsync({
+  address: SEPOLIA_RESOLVER,
+  abi: PUBLIC_RESOLVER_ABI,
+  functionName: "setText",
+  args: [node, "social.casts", JSON.stringify(updatedCasts)],
+});
+```
+
+#### Discovering Other Users (Event-Based)
+```typescript
+const logs = await publicClient.getLogs({
+  address: SEPOLIA_RESOLVER,
+  event: parseAbiItem(
+    "event TextChanged(bytes32 indexed node, string indexed indexedKey, string key, string value)"
+  ),
+  fromBlock: currentBlock - 500n,
+});
+```
+
+---
+
+## 📊 Smart Contract Addresses
+
+| Contract | Network | Address |
+|----------|---------|---------|
+| ENS Public Resolver | Sepolia | `0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5` |
+
+---
+
+## 🗺️ Roadmap
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                                                                  │
+│  Phase 1: Genesis (Current)                                     │
+│  ├─ ✅ ENS-gated access                                         │
+│  ├─ ✅ On-chain casts via text records                          │
+│  ├─ ✅ Decentralized feed discovery                             │
+│  └─ ✅ Portable ENS profiles                                    │
+│                                                                  │
+│  Phase 2: Social DeFi (Q2 2025)                                 │
+│  ├─ 🔜 Native ETH tipping                                       │
+│  ├─ 🔜 Token-gated premium content                              │
+│  ├─ 🔜 NFT profile badges                                       │
+│  └─ 🔜 Creator monetization via ENS subnames                    │
+│                                                                  │
+│  Phase 3: Multi-Chain Identity (Q3 2025)                        │
+│  ├─ 🔮 CCIP-Read cross-chain resolution                         │
+│  ├─ 🔮 L2 subname support (Optimism, Base, Arbitrum)           │
+│  └─ 🔮 Gasless posting via account abstraction                  │
+│                                                                  │
+│  Phase 4: Decentralized Governance (Q4 2025)                    │
+│  ├─ 🔮 DAO-controlled content policies                          │
+│  ├─ 🔮 Community moderation tokens                              │
+│  └─ 🔮 Open plugin architecture                                 │
+│                                                                  │
+│  Phase 5: Global Scale (2026)                                   │
+│  ├─ 🔮 ENS Namechain integration                                │
+│  ├─ 🔮 AI-powered content discovery                             │
+│  ├─ 🔮 Verified identity badges (Dentity)                       │
+│  └─ 🔮 Interop with Lens, Farcaster, Bluesky                   │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📁 Project Structure
+
+```
+ens-farcaster/
+├── packages/
+│   └── nextjs/
+│       ├── app/
+│       │   ├── page.tsx              # Main app entry
+│       │   ├── profile/page.tsx      # User profile settings
+│       │   └── [name]/page.tsx       # Dynamic user profiles
+│       ├── components/
+│       │   └── ens-farcaster/
+│       │       ├── Compose.tsx       # Cast composition (ENS write)
+│       │       ├── Feed.tsx          # Feed display (ENS read)
+│       │       ├── CastCard.tsx      # Individual cast display
+│       │       ├── Sidebar.tsx       # User sidebar
+│       │       ├── FollowButton.tsx  # Follow functionality
+│       │       ├── EnsGuard.tsx      # ENS gating logic
+│       │       └── LandingPage.tsx   # Landing page
+│       ├── utils/
+│       │   └── ens.ts                # ENS resolver ABI
+│       └── scaffold.config.ts        # Network configuration
+└── README.md
+```
+
+---
+
+## 🎬 Demo
+
+### Video Demo
+[📹 Watch the Demo Video](YOUR_YOUTUBE_LINK)
+
+### Live Demo
+[🌐 Try the Live App](YOUR_VERCEL_LINK)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- [ENS Domains](https://ens.domains/) - For the incredible naming infrastructure
+- [Scaffold-ETH 2](https://scaffoldeth.io/) - For the amazing development framework
+- [Farcaster](https://farcaster.xyz/) - For inspiring the UI/UX
+- [ETHGlobal HackMoney 2026](https://ethglobal.com/events/hackmoney2026) - For hosting amazing hackathons
+
+---
+
+<div align="center">
+
+**Built with ❤️ for ETH HACK MONEY 2026**
+
+[![ENS](https://img.shields.io/badge/ENS-Domains-blue?style=for-the-badge)](https://ens.domains/)
+[![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-purple?style=for-the-badge&logo=ethereum)](https://sepolia.etherscan.io/)
+
+</div>
