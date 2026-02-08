@@ -91,7 +91,7 @@ export const Feed = () => {
             // Skip failed reads
           }
         }
-      } catch (e) {
+      } catch {
         console.warn("Event discovery failed, using only user's casts");
       }
 

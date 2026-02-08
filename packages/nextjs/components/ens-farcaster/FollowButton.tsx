@@ -33,7 +33,7 @@ export const FollowButton = ({ targetName }: { targetName: string }) => {
           args: [node, "social.following"],
         }) as string;
         setFollowing(JSON.parse(followingJson || "[]"));
-      } catch (e) {
+      } catch {
         console.warn("No following list found");
       }
     };

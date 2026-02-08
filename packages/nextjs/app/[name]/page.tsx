@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { namehash } from "viem";
 import { useEnsAvatar, useEnsText, usePublicClient } from "wagmi";

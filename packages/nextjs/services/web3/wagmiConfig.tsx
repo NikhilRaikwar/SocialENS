@@ -23,17 +23,11 @@ export const wagmiConfig = createConfig({
       http("https://mainnet.rpc.buidlguidl.com")
     ];
 
-    const baseSepoliaFallback = [
-      http("https://base-sepolia.publicnode.com"),
-      http("https://base-sepolia.blockpi.network/v1/rpc/public"),
-      http("https://sepolia.base.org")
-    ];
+
 
     let rpcFallbacks = [];
     if (chain.id === 1) {
       rpcFallbacks = [...mainnetFallbackWithDefaultRPC];
-    } else if (chain.id === 84532) {
-      rpcFallbacks = [...baseSepoliaFallback];
     } else {
       rpcFallbacks = [http()];
     }
