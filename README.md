@@ -12,6 +12,7 @@
 SocialENS is a decentralized micro-blogging platform where your social graph is owned 100% by you. By using the **Ethereum Name Service (ENS)** as a primary data store, we have eliminated the need for traditional databases, centralized servers, and private accounts. Every interaction is anchored to your `.eth` name, providing a level of censorship resistance and data portability previously impossible in web2 social media.
 
 **Live Demo:** [https://socialens.nikhilraikwar.me/](https://socialens.nikhilraikwar.me/)
+**Video Overview:** [https://youtu.be/eKA8zdpIGlw](https://youtu.be/eKA8zdpIGlw)
 
 ---
 
@@ -115,6 +116,15 @@ Go to `http://localhost:3000` to see the app running locally.
 ```bash
 yarn next:build
 ```
+
+---
+
+## 🗺️ Roadmap 2026
+
+- **Q1 2026 (Launch)**: Official v1 launch for ETH HACK MONEY 2026.
+- **Q2 2026**: Integration with Layer 2 ENS (Optimism/Base) for lower gas costs.
+- **Q3 2026**: Decentralized media storage (IPFS/Arweave) for rich-text and image support.
+- **Q4 2026**: Community-driven protocol standards for ENS social metadata.
 
 ---
 
