@@ -19,11 +19,7 @@ export default function UserProfilePage() {
 
   // Derive fullName but don't return early yet to preserve hook order
   const fullName =
-    nameParam && nameParam !== "favicon.ico"
-      ? nameParam.endsWith(".eth")
-        ? nameParam
-        : `${nameParam}.eth`
-      : "";
+    nameParam && nameParam !== "favicon.ico" ? (nameParam.endsWith(".eth") ? nameParam : `${nameParam}.eth`) : "";
 
   // Use Sepolia for reading
   const publicClient = usePublicClient({ chainId: 11155111 });
@@ -85,7 +81,7 @@ export default function UserProfilePage() {
                       src={avatar || `https://avatar.vercel.sh/${fullName}`}
                       alt="avatar"
                       className="w-28 h-28 rounded-full border-4 border-base-100 shadow-xl"
-                      onError={(e) => {
+                      onError={e => {
                         (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${fullName}`;
                       }}
                     />

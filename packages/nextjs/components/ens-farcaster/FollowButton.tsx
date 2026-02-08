@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { namehash } from "viem";
-import { useAccount, useEnsName, useWriteContract, usePublicClient } from "wagmi";
+import { useAccount, useEnsName, usePublicClient, useWriteContract } from "wagmi";
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { PUBLIC_RESOLVER_ABI } from "~~/utils/ens";
 import { notification } from "~~/utils/scaffold-eth";
@@ -26,12 +26,12 @@ export const FollowButton = ({ targetName }: { targetName: string }) => {
       if (!ensName || !publicClient) return;
       try {
         const node = namehash(ensName);
-        const followingJson = await publicClient.readContract({
+        const followingJson = (await publicClient.readContract({
           address: SEPOLIA_RESOLVER,
           abi: PUBLIC_RESOLVER_ABI,
           functionName: "text",
           args: [node, "social.following"],
-        }) as string;
+        })) as string;
         setFollowing(JSON.parse(followingJson || "[]"));
       } catch {
         console.warn("No following list found");
@@ -83,8 +83,9 @@ export const FollowButton = ({ targetName }: { targetName: string }) => {
 
   return (
     <button
-      className={`btn btn-sm rounded-full px-6 ${isFollowing ? "btn-outline" : "btn-primary"} ${loading ? "loading" : ""
-        }`}
+      className={`btn btn-sm rounded-full px-6 ${isFollowing ? "btn-outline" : "btn-primary"} ${
+        loading ? "loading" : ""
+      }`}
       onClick={handleFollow}
       disabled={loading || !ensName}
     >

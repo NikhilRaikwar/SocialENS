@@ -1,192 +1,132 @@
 "use client";
 
-import Image from "next/image";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 export const LandingPage = ({ hasNoEns }: { hasNoEns?: boolean }) => {
   const { openConnectModal } = useConnectModal();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-100 via-base-100 to-primary/5 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Background blobs - more visible */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/20 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-secondary/20 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30%] h-[30%] bg-accent/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div className="min-h-screen bg-base-100 text-base-content relative overflow-hidden flex flex-col">
+      {/* Subtle Background Decoration */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px] animate-float"></div>
+      </div>
 
-      <div className="max-w-4xl w-full text-center z-10">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <Image
-            src="/logo.png"
-            alt="SocialENS Logo"
-            width={80}
-            height={80}
-            className="rounded-2xl shadow-2xl"
-          />
-        </div>
+      <div className="relative z-10 container mx-auto px-6 pt-24 pb-32 flex-grow">
+        {/* Hero Section - Balanced and Professional */}
+        <div className="max-w-4xl mx-auto text-center mb-32">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold tracking-widest uppercase mb-8 text-primary shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            100% On-Chain Social Protocol
+          </div>
 
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium mb-8">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span> 100% On-Chain Social • Ethereum Sepolia
-        </div>
+          <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-8">
+            Social<span className="text-primary tracking-tighter">ENS</span>
+          </h1>
 
-        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent leading-tight">
-          SocialENS
-        </h1>
+          <p className="text-xl md:text-2xl opacity-70 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+            Own your social graph. Powered by the Ethereum Name Service. Stored eternally in text records, accessible to
+            everyone, controlled by no one.
+          </p>
 
-        <p className="text-lg md:text-xl text-base-content/70 mb-12 max-w-2xl mx-auto leading-relaxed">
-          The first fully decentralized social network powered by ENS. Your profile, your follows, and your posts, all
-          stored directly in ENS text records on Ethereum Sepolia.
-        </p>
-
-        {hasNoEns ? (
-          <div className="bg-error/10 border border-error/30 p-8 rounded-3xl max-w-md mx-auto backdrop-blur-sm">
-            <div className="text-5xl mb-4">🛂</div>
-            <h2 className="text-2xl font-bold text-error mb-2">Sepolia ENS Name Required</h2>
-            <p className="mb-6 opacity-80">
-              To use SocialENS, you need an ENS name on Sepolia testnet. Register one for free (just gas) to get started!
-            </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {!hasNoEns ? (
+              <button
+                onClick={openConnectModal}
+                className="btn btn-primary btn-lg rounded-full px-12 text-lg shadow-xl hover:scale-105 transition-all font-bold"
+              >
+                Connect Identity
+              </button>
+            ) : (
+              <a
+                href="https://sepolia.app.ens.domains"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-error btn-lg rounded-full px-12 text-lg shadow-xl hover:scale-105 transition-all font-bold"
+              >
+                Get Sepolia ENS
+              </a>
+            )}
             <a
               href="https://sepolia.app.ens.domains"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-error btn-lg rounded-full px-10 text-lg shadow-xl hover:scale-105 transition-transform"
+              className="btn btn-outline btn-lg rounded-full px-12 text-lg border-white/10 hover:bg-white/5 transition-all"
             >
-              🌐 Register on Sepolia ENS
+              Learn More
             </a>
           </div>
-        ) : (
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={openConnectModal}
-              className="btn btn-primary btn-lg rounded-full px-10 text-lg shadow-2xl hover:scale-105 transition-transform border-0 bg-gradient-to-r from-primary to-secondary"
-            >
-              🔗 Connect Wallet
-            </button>
-            <a
-              href="https://sepolia.app.ens.domains"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-outline btn-lg rounded-full px-10 text-lg backdrop-blur-sm hover:bg-base-200"
-            >
-              Get Sepolia ENS
-            </a>
-          </div>
-        )}
+        </div>
 
-        {/* Features Section */}
-        <div className="mt-24 w-full max-w-5xl mx-auto">
-          <h2 className="text-3xl font-black mb-10 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Why SocialENS?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
+        {/* Features Section - Restored and Improved */}
+        <div id="features" className="max-w-6xl mx-auto mb-40">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">Key Features</h2>
+            <div className="h-1.5 w-20 bg-primary mx-auto rounded-full"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
                 title: "No DB, No Backend",
                 desc: "All social data is stored in ENS text records on Sepolia. Fully censorship resistant.",
                 icon: "⛓️",
-                color: "from-blue-500 to-cyan-500",
+                color: "bg-blue-500/10 text-blue-500",
               },
               {
                 title: "Portable Identity",
                 desc: "Your followers and posts follow your .eth name across any supported app.",
                 icon: "🕊️",
-                color: "from-purple-500 to-pink-500",
+                color: "bg-purple-500/10 text-purple-500",
               },
               {
                 title: "On-Chain Social Graph",
                 desc: "Follow lists are stored as JSON text records on the ENS Public Resolver.",
                 icon: "📈",
-                color: "from-green-500 to-emerald-500",
+                color: "bg-green-500/10 text-green-500",
               },
               {
-                title: "Premium Aesthetic",
-                desc: "Farcaster-inspired UI that feels like a modern social app, but runs on Ethereum.",
+                title: "Professional Aesthetic",
+                desc: "A clean, responsive interface that feels like a modern social app, running on Web3 rails.",
                 icon: "🎨",
-                color: "from-orange-500 to-amber-500",
+                color: "bg-orange-500/10 text-orange-500",
               },
               {
                 title: "Tipping & DeFi",
                 desc: "Directly tip creators via their ENS names. Social meets programmable money.",
                 icon: "💰",
-                color: "from-yellow-500 to-orange-500",
+                color: "bg-yellow-500/10 text-yellow-500",
               },
               {
                 title: "100% Open Source",
                 desc: "Built with Scaffold-ETH 2. Audit the code, fork it, and build on top.",
                 icon: "📂",
-                color: "from-teal-500 to-blue-500",
+                color: "bg-teal-500/10 text-teal-500",
               },
-            ].map((feat, i) => (
+            ].map((f, i) => (
               <div
                 key={i}
-                className="group p-6 bg-base-100/80 backdrop-blur-xl rounded-2xl border border-base-300 hover:border-primary/50 transition-all hover:shadow-xl hover:shadow-primary/10"
+                className="bg-base-200/50 p-8 rounded-[2rem] border border-white/5 hover:border-primary/20 transition-all hover:-translate-y-1 group"
               >
-                <div className={`text-3xl mb-4 w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br ${feat.color} bg-opacity-20`}>
-                  {feat.icon}
+                <div
+                  className={`w-14 h-14 flex items-center justify-center rounded-2xl ${f.color} text-2xl mb-6 shadow-inner`}
+                >
+                  {f.icon}
                 </div>
-                <h3 className="text-lg font-bold mb-2">{feat.title}</h3>
-                <p className="text-base-content/60 text-sm leading-relaxed">{feat.desc}</p>
+                <h3 className="text-xl font-bold mb-3">{f.title}</h3>
+                <p className="opacity-60 text-sm leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Roadmap Section */}
-        <div className="mt-24 w-full max-w-4xl mx-auto">
-          <h2 className="text-3xl font-black mb-12 text-center">Protocol Roadmap</h2>
-          <div className="relative space-y-8">
-            {[
-              {
-                phase: "Phase 1: Genesis",
-                status: "Active",
-                desc: "ENS-gated access, on-chain casts via text records, decentralized feed discovery using TextChanged events.",
-              },
-              {
-                phase: "Phase 2: Social DeFi",
-                status: "Q2 2025",
-                desc: "Native ETH tipping via ENS addresses, token-gated casts for premium content, NFT profile badges.",
-              },
-              {
-                phase: "Phase 3: Multi-Chain",
-                status: "Q3 2025",
-                desc: "CCIP-Read integration for cross-chain ENS resolution, L2 subname support, gasless posting.",
-              },
-              {
-                phase: "Phase 4: Governance",
-                status: "Q4 2025",
-                desc: "DAO-controlled content policies, community moderation tokens, open plugin architecture.",
-              },
-              {
-                phase: "Phase 5: Global Scale",
-                status: "2026",
-                desc: "ENS Namechain integration, AI-powered content discovery, interoperability with Lens & Farcaster.",
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex gap-6 items-start relative pb-8 border-l-2 border-primary/30 ml-3 pl-6 last:border-0 last:pb-0"
-              >
-                <div className="absolute left-[-9px] w-4 h-4 rounded-full bg-primary shadow-lg shadow-primary/50"></div>
-                <div className="flex-1 text-left p-6 bg-base-100/80 rounded-2xl border border-base-300 backdrop-blur-sm hover:border-primary/30 transition-all">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
-                    <h3 className="text-xl font-bold">{item.phase}</h3>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${item.status === "Active" ? "bg-primary text-primary-content" : "bg-base-300"}`}
-                    >
-                      {item.status}
-                    </span>
-                  </div>
-                  <p className="text-base-content/60">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+        {/* FAQ Section - Restored */}
+        <div className="max-w-3xl mx-auto mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black uppercase tracking-tighter">Common Questions</h2>
           </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-24 mb-16 w-full max-w-3xl mx-auto">
-          <h2 className="text-3xl font-black mb-10">Common Questions</h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {[
               {
                 q: "Do I need a mainnet ENS name?",
@@ -207,11 +147,11 @@ export const LandingPage = ({ hasNoEns }: { hasNoEns?: boolean }) => {
             ].map((item, i) => (
               <div
                 key={i}
-                className="collapse collapse-plus bg-base-100/80 border border-base-300 rounded-2xl text-left overflow-hidden hover:border-primary/30 transition-all"
+                className="collapse collapse-arrow bg-base-200/50 border border-white/5 rounded-2xl overflow-hidden"
               >
-                <input type="radio" name="my-accordion-3" />
-                <div className="collapse-title text-lg font-bold p-5">{item.q}</div>
-                <div className="collapse-content px-5 pb-5 opacity-70">
+                <input type="radio" name="faq-accordion" />
+                <div className="collapse-title text-lg font-bold p-6">{item.q}</div>
+                <div className="collapse-content px-6 pb-6 opacity-60">
                   <p>{item.a}</p>
                 </div>
               </div>
@@ -220,8 +160,15 @@ export const LandingPage = ({ hasNoEns }: { hasNoEns?: boolean }) => {
         </div>
       </div>
 
-      <footer className="w-full py-8 text-center text-sm opacity-50 font-medium border-t border-base-300 bg-base-100/50 backdrop-blur-sm">
-        Built for ETH HACK MONEY 2026 • Powered by Ethereum Sepolia & ENS Text Records • Scaffold-ETH 2
+      <footer className="relative z-10 py-12 text-center border-t border-white/5 bg-base-200/30 backdrop-blur-sm">
+        <div className="container mx-auto px-6 text-sm flex flex-col items-center gap-4">
+          <p className="opacity-40 font-medium">Built for ETH HACK MONEY 2026 • Powered by Ethereum Sepolia & ENS</p>
+          <div className="flex gap-6 opacity-60">
+            <span className="hover:text-primary transition-colors cursor-pointer">Documentation</span>
+            <span className="hover:text-primary transition-colors cursor-pointer">Github</span>
+            <span className="hover:text-primary transition-colors cursor-pointer">Support</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

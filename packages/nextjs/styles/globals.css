@@ -2,11 +2,44 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
 @theme {
+  --font-display: var(--font-syne), "Syne", sans-serif;
+  --font-body: var(--font-outfit), "Outfit", sans-serif;
+
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
   --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
-  --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+/* Base Styles */
+@layer base {
+  body {
+    font-family: var(--font-body);
+    @apply antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight;
+  }
 }
 
 @plugin "daisyui" {
@@ -18,106 +51,72 @@
 @plugin "daisyui/theme" {
   name: "light";
 
-  --color-primary: #7c65c1; /* Farcaster Purple */
+  --color-primary: #4f46e5;
+  /* Indigo-600 */
   --color-primary-content: #ffffff;
-  --color-secondary: #e8e4f6;
-  --color-secondary-content: #7c65c1;
-  --color-accent: #b9adff;
-  --color-accent-content: #212638;
-  --color-neutral: #212638;
-  --color-neutral-content: #ffffff;
-  --color-base-100: #ffffff;
-  --color-base-200: #f7f5ff;
-  --color-base-300: #e8e4f6;
-  --color-base-content: #212638;
-  --color-info: #7c65c1;
-  --color-success: #34eeb6;
-  --color-warning: #ffcf72;
-  --color-error: #ff8863;
+  --color-secondary: #0ea5e9;
+  /* Sky-500 */
+  --color-secondary-content: #ffffff;
+  --color-accent: #10b981;
+  /* Emerald-500 */
+  --color-accent-content: #ffffff;
 
-  --radius-field: 9999rem;
-  --radius-box: 1.5rem;
-  --tt-tailw: 6px;
+  --color-neutral: #1f2937;
+  --color-neutral-content: #ffffff;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #f8fafc;
+  --color-base-300: #e2e8f0;
+  --color-base-content: #0f172a;
+
+  --radius-box: 1rem;
+  --radius-btn: 0.6rem;
 }
 
 @plugin "daisyui/theme" {
   name: "dark";
 
-  --color-primary: #7c65c1;
+  /* ETHGlobal Professional Aesthetic */
+  --color-primary: #6366f1;
+  /* Indigo-500 */
   --color-primary-content: #ffffff;
-  --color-secondary: #2a2438;
-  --color-secondary-content: #e8e4f6;
-  --color-accent: #4969a6;
-  --color-accent-content: #f9fbff;
-  --color-neutral: #f9fbff;
-  --color-neutral-content: #385183;
-  --color-base-100: #1d1929;
-  --color-base-200: #121019;
-  --color-base-300: #1d1929;
-  --color-base-content: #f9fbff;
-  --color-info: #7c65c1;
-  --color-success: #34eeb6;
-  --color-warning: #ffcf72;
-  --color-error: #ff8863;
 
-  --radius-field: 9999rem;
-  --radius-box: 1.5rem;
+  --color-secondary: #06b6d4;
+  /* Cyan-500 */
+  --color-secondary-content: #ffffff;
 
-  --tt-tailw: 6px;
-  --tt-bg: var(--color-primary);
+  --color-accent: #10b981;
+  /* Emerald-500 */
+  --color-accent-content: #ffffff;
+
+  --color-neutral: #111827;
+  --color-neutral-content: #ffffff;
+
+  --color-base-100: #0f172a;
+  /* Slate-900 */
+  --color-base-200: #1e293b;
+  /* Slate-800 */
+  --color-base-300: #334155;
+  /* Slate-700 */
+  --color-base-content: #f8fafc;
+
+  --color-info: #38bdf8;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  --radius-box: 1.25rem;
+  --radius-btn: 0.75rem;
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-
-  p {
-    margin: 1rem 0;
-  }
-
-  body {
-    min-height: 100vh;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    margin-bottom: 0.5rem;
-    line-height: 1;
-  }
+.glass-panel {
+  @apply bg-base-100/70 backdrop-blur-xl border border-white/10 shadow-glass;
 }
 
-:root,
-[data-theme] {
-  background: var(--color-base-200);
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
 }
 
-.btn {
-  @apply shadow-md;
-}
-
-.btn.btn-ghost {
-  @apply shadow-none;
-}
-
-.link {
-  text-underline-offset: 2px;
-}
-
-.link:hover {
-  opacity: 80%;
+.card-hover {
+  @apply transition-all duration-300 hover:scale-[1.01] hover:border-primary/50;
 }
