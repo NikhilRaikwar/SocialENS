@@ -418,29 +418,10 @@ yarn serve
 ## 🎬 Demo
 
 ### 📹 Video Demo
-[🎥 **Watch the Full Demo Video**](YOUR_YOUTUBE_LINK)
+[🎥 **Watch the Full Demo Video**]([SocialENS](https://youtu.be/eKA8zdpIGlw))
 
 ### 🌐 Live Application
-[🚀 **Try the Live App**](YOUR_VERCEL_LINK)
-
-### 📸 Screenshots
-
-<details>
-<summary>Click to expand screenshots</summary>
-
-#### Landing Page
-![Landing Page](./screenshots/landing.png)
-
-#### Main Feed
-![Main Feed](./screenshots/feed.png)
-
-#### User Profile
-![User Profile](./screenshots/profile.png)
-
-#### Profile Settings
-![Profile Settings](./screenshots/settings.png)
-
-</details>
+[🚀 **Try the Live App**]([SocialENS](https://socialens.nikhilraikwar.me/))
 
 ---
 
@@ -766,16 +747,6 @@ yarn lint
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-```
-MIT License
-
-Copyright (c) 2025 SocialENS Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
-
 ---
 
 ## 🙏 Acknowledgments
@@ -800,17 +771,17 @@ We'd like to thank the following projects and communities:
 
 ## 📞 Contact & Support
 
-- 🐦 **Twitter**: [@socialens](https://twitter.com/socialens)
-- 💬 **Telegram**: [Join Community](https://t.me/socialens)
-- 📧 **Email**: hello@socialens.eth
-- 🐛 **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/ens-farcaster/issues)
-- 💡 **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/ens-farcaster/discussions)
+- 🐦 **Twitter**: [@socialens](https://twitter.com/nikhilraikwarr)
+- 💬 **Telegram**: [Join Community](https://t.me/@NikhilRaikwar18)
+- 📧 **Email**: raikwarnikhil80@gmail.com
+- 🐛 **Issues**: [GitHub Issues](https://github.com/NikhilRaikwar/SocialENS/issues)
+- 💡 **Discussions**: [GitHub Discussions](https://github.com/NikhilRaikwar/SocialENS/discussions)
 
 ---
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=YOUR_USERNAME/ens-farcaster&type=Date)](https://star-history.com/#YOUR_USERNAME/ens-farcaster&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=NikhilRaikwar/SocialENS&type=Date)](https://star-history.com/#NikhilRaikwar/SocialENS&Date)
 
 ---
 
@@ -822,7 +793,7 @@ We'd like to thank the following projects and communities:
 [![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-627EEA?style=for-the-badge&logo=ethereum&logoColor=white)](https://sepolia.etherscan.io/)
 [![Scaffold-ETH](https://img.shields.io/badge/Scaffold-ETH%202-875BF7?style=for-the-badge)](https://scaffoldeth.io/)
 
-**[🌟 Star this repo](https://github.com/YOUR_USERNAME/ens-farcaster) • [🐦 Follow us](https://twitter.com/socialens) • [📖 Read the docs](https://docs.socialens.eth)**
+**[🌟 Star this repo](https://github.com/NikhilRaikwar/SocialENS) • [🐦 Follow us](https://twitter.com/nikhilraikwarr) • [📖 Read the docs](https://github.com/NikhilRaikwar/SocialENS)**
 
 ---
 
