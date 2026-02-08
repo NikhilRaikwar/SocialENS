@@ -1,80 +1,74 @@
 "use client";
 
-import Link from "next/link";
-import { Address } from "@scaffold-ui/components";
 import type { NextPage } from "next";
-import { hardhat } from "viem/chains";
-import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { Compose } from "~~/components/ens-farcaster/Compose";
+import { EnsGuard } from "~~/components/ens-farcaster/EnsGuard";
+import { Feed } from "~~/components/ens-farcaster/Feed";
+import { FollowButton } from "~~/components/ens-farcaster/FollowButton";
+import { Sidebar } from "~~/components/ens-farcaster/Sidebar";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
-  const { targetNetwork } = useTargetNetwork();
-
   return (
-    <>
-      <div className="flex items-center flex-col grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address
-              address={connectedAddress}
-              chain={targetNetwork}
-              blockExplorerAddressLink={
-                targetNetwork.id === hardhat.id ? `/blockexplorer/address/${connectedAddress}` : undefined
-              }
-            />
+    <EnsGuard>
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          {/* Left Sidebar */}
+          <div className="hidden md:block md:col-span-4 lg:col-span-3">
+            <Sidebar />
           </div>
 
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
-        </div>
-
-        <div className="grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col md:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
+          {/* Main Feed */}
+          <div className="col-span-1 md:col-span-8 lg:col-span-6">
+            <div className="flex flex-col gap-6">
+              <h1 className="text-3xl font-black mb-2">Home</h1>
+              <Compose />
+              <Feed />
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
+          </div>
+
+          {/* Right Sidebar (Optional - Trending/Suggestions) */}
+          <div className="hidden lg:block lg:col-span-3">
+            <div className="bg-base-100/40 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-base-300 sticky top-20 hover:border-primary/20 transition-all group">
+              <h3 className="font-black text-2xl mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Who to follow
+              </h3>
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center justify-between group/item">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-xl shadow-inner group-hover/item:scale-110 transition-all">
+                      V
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-black text-sm truncate">vitalik.eth</p>
+                      <p className="text-[10px] uppercase tracking-widest opacity-40">Builder</p>
+                    </div>
+                  </div>
+                  <FollowButton targetName="vitalik.eth" />
+                </div>
+
+                <div className="flex items-center justify-between group/item">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary font-black text-xl shadow-inner group-hover/item:scale-110 transition-all">
+                      S
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-black text-sm truncate">scaffold-eth.eth</p>
+                      <p className="text-[10px] uppercase tracking-widest opacity-40">Tooling</p>
+                    </div>
+                  </div>
+                  <FollowButton targetName="scaffold-eth.eth" />
+                </div>
+              </div>
+              <div className="mt-8 pt-6 border-t border-base-300/50">
+                <p className="text-[10px] font-bold uppercase tracking-widest opacity-30 leading-relaxed">
+                  Powered by ENS & Base. <br /> 100% On-Chain Social.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </EnsGuard>
   );
 };
 
