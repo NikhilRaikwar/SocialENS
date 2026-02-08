@@ -6,6 +6,7 @@ import { parseEther } from "viem";
 import { useEnsAddress, useEnsText, useSendTransaction } from "wagmi";
 import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 import { notification } from "~~/utils/scaffold-eth";
+import { FollowButton } from "./FollowButton";
 
 interface CastProps {
   cast: {
@@ -93,13 +94,16 @@ export const CastCard = ({ cast }: CastProps) => {
               </span>
             </div>
 
-            <button
-              onClick={handleTip}
-              className="btn btn-secondary btn-xs rounded-full opacity-0 group-hover:opacity-100 transition-all font-bold shadow-lg scale-90 group-hover:scale-100"
-              title={`Tip ${tipValue} ETH`}
-            >
-              💸 Tip
-            </button>
+            <div className="flex items-center gap-2">
+              <FollowButton targetName={authorName} size="xs" />
+              <button
+                onClick={handleTip}
+                className="btn btn-secondary btn-xs rounded-full opacity-0 group-hover:opacity-100 transition-all font-bold shadow-lg scale-90 group-hover:scale-100"
+                title={`Tip ${tipValue} ETH`}
+              >
+                💸 Tip
+              </button>
+            </div>
           </div>
 
           <p className="text-xl font-light leading-relaxed opacity-90 break-words whitespace-pre-wrap">{cast.text}</p>

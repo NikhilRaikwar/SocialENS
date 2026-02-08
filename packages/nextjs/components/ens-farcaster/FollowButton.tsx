@@ -10,7 +10,7 @@ import { notification } from "~~/utils/scaffold-eth";
 // ENS Public Resolver on Ethereum Sepolia (official deployment)
 const SEPOLIA_RESOLVER = "0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5";
 
-export const FollowButton = ({ targetName }: { targetName: string }) => {
+export const FollowButton = ({ targetName, size = "sm" }: { targetName: string; size?: "xs" | "sm" | "md" | "lg" }) => {
   const { address } = useAccount();
   // Read ENS name from SEPOLIA
   const { data: ensName } = useEnsName({ address, chainId: 11155111 });
@@ -83,9 +83,8 @@ export const FollowButton = ({ targetName }: { targetName: string }) => {
 
   return (
     <button
-      className={`btn btn-sm rounded-full px-6 ${isFollowing ? "btn-outline" : "btn-primary"} ${
-        loading ? "loading" : ""
-      }`}
+      className={`btn btn-${size} rounded-full px-6 ${isFollowing ? "btn-outline" : "btn-primary"} ${loading ? "loading" : ""
+        }`}
       onClick={handleFollow}
       disabled={loading || !ensName}
     >
