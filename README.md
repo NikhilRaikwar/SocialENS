@@ -124,8 +124,6 @@ graph LR
 
 ## 🏗️ Architecture
 
-### System Architecture
-
 ```mermaid
 graph TB
     subgraph "User Layer"
@@ -179,96 +177,13 @@ graph TB
     style D3 fill:#f59e0b
 ```
 
-### Data Flow Architecture
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant W as Wallet
-    participant F as Frontend
-    participant R as ENS Resolver
-    participant E as Ethereum
-    
-    Note over U,E: Writing a Cast (Post)
-    U->>F: "GM! Building on-chain 🚀"
-    F->>W: Sign transaction
-    W->>U: Request approval
-    U->>W: Approve
-    W->>R: setText(node, "social.casts", JSON)
-    R->>E: Store on-chain
-    E-->>R: Transaction confirmed
-    R-->>F: Success
-    F-->>U: ✅ Cast published!
-    
-    Note over U,E: Reading Feed
-    U->>F: Load feed
-    F->>R: getLogs(TextChanged event)
-    R-->>F: Event logs
-    F->>R: text(node, "social.casts")
-    R->>E: Read from chain
-    E-->>R: Cast data
-    R-->>F: JSON array
-    F-->>U: Display feed
-```
-
-### ENS Text Records Structure
-
-```mermaid
-graph TD
-    A[alice.eth] --> B{ENS Resolver}
-    
-    B --> C[social.casts]
-    B --> D[social.following]
-    B --> E[description]
-    B --> F[avatar]
-    B --> G[social.tipAmount]
-    
-    C --> C1["[{<br/>  id: 1707584400000,<br/>  text: 'GM!',<br/>  timestamp: 1707584400000,<br/>  author: 'alice.eth'<br/>}]"]
-    
-    D --> D1["['bob.eth',<br/> 'charlie.eth',<br/> 'vitalik.eth']"]
-    
-    E --> E1["Web3 builder |<br/>ENS enthusiast"]
-    
-    F --> F1[ipfs://Qm...]
-    
-    G --> G1[0.001 ETH]
-    
-    style A fill:#5f4bb6
-    style B fill:#0ea5e9
-    style C1 fill:#10b981
-    style D1 fill:#10b981
-    style E1 fill:#10b981
-    style F1 fill:#10b981
-    style G1 fill:#10b981
-```
-
 ---
 
 ## 🔧 How It Works
 
 ### 1️⃣ **ENS-Gated Access**
 
-```mermaid
-flowchart LR
-    A[User Visits<br/>SocialENS] --> B{Wallet<br/>Connected?}
-    B -->|No| C[Show Landing Page<br/>Connect Wallet Button]
-    B -->|Yes| D{Has Sepolia<br/>ENS Name?}
-    
-    C --> E[User Connects Wallet]
-    E --> D
-    
-    D -->|No| F[Show Error:<br/>Get Sepolia ENS]
-    D -->|Yes| G[✅ Access Granted<br/>Load App]
-    
-    F --> H[Redirect to<br/>sepolia.app.ens.domains]
-    
-    G --> I[Read ENS Name<br/>useEnsName Hook]
-    I --> J[Load User Profile<br/>Load Feed]
-    
-    style A fill:#5f4bb6
-    style G fill:#10b981
-    style F fill:#ef4444
-```
+Only users with a Sepolia ENS name can access the platform. This ensures genuine Web3 identity verification.
 
 **Implementation:**
 ```typescript
@@ -289,31 +204,9 @@ return <>{children}</>; // Access granted
 
 ### 2️⃣ **Creating Posts (Casts)**
 
-```mermaid
-flowchart TD
-    A[User Types Post] --> B[Click 'Cast' Button]
-    B --> C[Read Current Casts<br/>from ENS]
-    C --> D[Create New Cast Object]
-    
-    D --> E["cast = {<br/>  id: Date.now&#40;&#41;,<br/>  text: 'GM!',<br/>  timestamp: Date.now&#40;&#41;,<br/>  author: 'alice.eth'<br/>}"]
-    
-    E --> F[Add to Array<br/>[newCast, ...oldCasts]]
-    F --> G[JSON.stringify]
-    G --> H[setText&#40;node, 'social.casts', JSON&#41;]
-    
-    H --> I{Transaction<br/>Confirmed?}
-    I -->|Yes| J[✅ Cast On-Chain!]
-    I -->|No| K[❌ Error]
-    
-    J --> L[Emit Custom Event<br/>'cast-success']
-    L --> M[Refresh Feed]
-    
-    style A fill:#5f4bb6
-    style J fill:#10b981
-    style K fill:#ef4444
-```
+All posts are stored as JSON arrays in the `social.casts` ENS text record. Each cast contains metadata including timestamp, author, and content.
 
-**Code Snippet:**
+**Code:**
 ```typescript
 // Compose.tsx - Writing to ENS
 const node = namehash(ensName);
@@ -349,27 +242,7 @@ await writeContractAsync({
 
 ### 3️⃣ **Feed Discovery**
 
-```mermaid
-flowchart TD
-    A[Load Feed] --> B[Fetch Your Casts<br/>from ENS]
-    B --> C[Discover Other Users<br/>via Events]
-    
-    C --> D[getLogs&#40;TextChanged&#41;<br/>Last 1000 blocks]
-    D --> E[Filter: key = 'social.casts']
-    E --> F[Extract Unique Nodes]
-    
-    F --> G[For Each Node:<br/>Read 'social.casts']
-    G --> H[Collect All Casts]
-    
-    H --> I[Deduplicate by Cast ID]
-    I --> J[Sort by Timestamp DESC]
-    J --> K[Display Feed]
-    
-    B --> H
-    
-    style A fill:#5f4bb6
-    style K fill:#10b981
-```
+Users are discovered by scanning blockchain events for `TextChanged` events on the ENS resolver contract. This creates a decentralized, permissionless discovery mechanism.
 
 **Discovery Algorithm:**
 ```typescript
@@ -403,58 +276,49 @@ for (const node of uniqueNodes) {
 
 ### 4️⃣ **Following System**
 
-```mermaid
-flowchart LR
-    A[Click Follow<br/>on @bob.eth] --> B[Read Your Following List<br/>from ENS]
-    B --> C{Already<br/>Following?}
-    
-    C -->|Yes| D[Remove from Array]
-    C -->|No| E[Add to Array]
-    
-    D --> F[updatedFollowing =<br/>following.filter&#40;f => f !== 'bob.eth'&#41;]
-    E --> G[updatedFollowing =<br/>[...following, 'bob.eth']]
-    
-    F --> H[setText&#40;node,<br/>'social.following',<br/>JSON&#41;]
-    G --> H
-    
-    H --> I[✅ Updated On-Chain]
-    
-    style A fill:#5f4bb6
-    style I fill:#10b981
+The social graph is stored in the `social.following` text record as a JSON array of ENS names. This data is portable and controlled entirely by the user.
+
+**Code:**
+```typescript
+// FollowButton.tsx
+const handleFollow = async () => {
+  const node = namehash(ensName);
+  
+  // Read current following list
+  const followingJson = await publicClient.readContract({
+    address: SEPOLIA_RESOLVER,
+    functionName: "text",
+    args: [node, "social.following"],
+  });
+  
+  const following = JSON.parse(followingJson || "[]");
+  
+  // Toggle follow
+  const updatedFollowing = isFollowing
+    ? following.filter(f => f !== targetName)
+    : [...following, targetName];
+  
+  // Write back to ENS
+  await writeContractAsync({
+    address: SEPOLIA_RESOLVER,
+    functionName: "setText",
+    args: [node, "social.following", JSON.stringify(updatedFollowing)],
+  });
+};
 ```
 
 ---
 
 ### 5️⃣ **Tipping Creators**
 
-```mermaid
-flowchart TD
-    A[See Interesting Cast] --> B[Click 💸 Tip]
-    B --> C[Read Author's<br/>Tip Preference]
-    
-    C --> D[text&#40;authorNode,<br/>'social.tipAmount'&#41;]
-    D --> E[Default: 0.001 ETH]
-    
-    E --> F[Resolve Author ENS<br/>to Address]
-    F --> G[useEnsAddress Hook]
-    
-    G --> H[Send Transaction<br/>to Author Address]
-    H --> I{Success?}
-    
-    I -->|Yes| J[✅ Tip Sent!<br/>Notify Creator]
-    I -->|No| K[❌ Transaction Failed]
-    
-    style A fill:#5f4bb6
-    style J fill:#10b981
-    style K fill:#ef4444
-```
+Creators can set their preferred tip amount in the `social.tipAmount` text record. Payments are sent directly to their ENS-resolved address.
 
 **Code:**
 ```typescript
 // CastCard.tsx - Tipping
 const { data: preferredTip } = useEnsText({
   name: authorName,
-  key: "tipAmount",
+  key: "social.tipAmount",
   chainId: 11155111,
 });
 
@@ -582,102 +446,32 @@ yarn serve
 
 ## 📊 Tech Stack
 
-```mermaid
-graph TB
-    subgraph "Frontend"
-        A1[Next.js 15]
-        A2[React 19]
-        A3[TypeScript 5.8]
-        A4[Tailwind CSS 4]
-        A5[DaisyUI 5]
-    end
-    
-    subgraph "Web3"
-        B1[Wagmi v2]
-        B2[Viem 2.39]
-        B3[RainbowKit 2.2]
-        B4[TanStack Query]
-    end
-    
-    subgraph "Blockchain"
-        C1[Ethereum Sepolia]
-        C2[ENS Protocol]
-        C3[Public Resolver]
-    end
-    
-    subgraph "Development"
-        D1[Scaffold-ETH 2]
-        D2[Foundry]
-        D3[Vercel]
-    end
-    
-    A1 --> B1
-    A2 --> B2
-    B1 --> C1
-    B2 --> C2
-    C2 --> C3
-    D1 --> A1
-    
-    style A1 fill:#000000,color:#fff
-    style B1 fill:#5f4bb6
-    style C2 fill:#0ea5e9
-    style D1 fill:#10b981
-```
-
-### Core Dependencies
+### Core Technologies
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Next.js | 15.2.8 | React framework with App Router |
-| React | 19.2.3 | UI library |
-| TypeScript | 5.8.2 | Type safety |
-| Wagmi | 2.19.5 | React hooks for Ethereum |
-| Viem | 2.39.0 | TypeScript Ethereum library |
-| RainbowKit | 2.2.9 | Wallet connection UI |
-| Tailwind CSS | 4.1.3 | Utility-first CSS |
-| DaisyUI | 5.0.9 | Tailwind component library |
+| **Next.js** | 15.2.8 | React framework with App Router |
+| **React** | 19.2.3 | UI library |
+| **TypeScript** | 5.8.2 | Type safety |
+| **Wagmi** | 2.19.5 | React hooks for Ethereum |
+| **Viem** | 2.39.0 | TypeScript Ethereum library |
+| **RainbowKit** | 2.2.9 | Wallet connection UI |
+| **Tailwind CSS** | 4.1.3 | Utility-first CSS framework |
+| **DaisyUI** | 5.0.9 | Tailwind component library |
+| **TanStack Query** | 5.59.15 | Data fetching & caching |
+| **Scaffold-ETH 2** | Latest | Development framework |
+
+### Blockchain
+
+- **Network**: Ethereum Sepolia Testnet
+- **ENS Protocol**: Text records for data storage
+- **Smart Contract**: ENS Public Resolver (`0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5`)
 
 ---
 
 ## 🗺️ Roadmap
 
-```mermaid
-gantt
-    title SocialENS Development Roadmap
-    dateFormat YYYY-MM
-    section Phase 1 - Genesis ✅
-    ENS-gated access           :done, 2025-01, 2025-02
-    On-chain casts            :done, 2025-01, 2025-02
-    Decentralized feed        :done, 2025-01, 2025-02
-    Portable profiles         :done, 2025-01, 2025-02
-    
-    section Phase 2 - DeFi 🔜
-    Native ETH tipping        :active, 2025-03, 2025-04
-    Token-gated content       :2025-04, 2025-05
-    NFT profile badges        :2025-05, 2025-06
-    Creator monetization      :2025-06, 2025-07
-    
-    section Phase 3 - Multi-Chain 🔮
-    CCIP-Read resolution      :2025-08, 2025-09
-    L2 subname support        :2025-09, 2025-10
-    Gasless posting (AA)      :2025-10, 2025-11
-    
-    section Phase 4 - Governance 🔮
-    DAO-controlled policies   :2025-12, 2026-01
-    Community moderation      :2026-01, 2026-02
-    Plugin architecture       :2026-02, 2026-03
-    
-    section Phase 5 - Scale 🔮
-    ENS Namechain integration :2026-04, 2026-06
-    AI content discovery      :2026-06, 2026-08
-    Verified identity (Dentity):2026-08, 2026-10
-    Interop with Lens/Farcaster:2026-10, 2026-12
-```
-
-### Detailed Roadmap
-
-<details>
-<summary>Phase 1: Genesis (Current) ✅</summary>
+### Phase 1: Genesis (Current) ✅
 
 - [x] ENS-gated access
 - [x] On-chain casts via text records
@@ -687,10 +481,7 @@ gantt
 - [x] User profile pages
 - [x] Responsive UI design
 
-</details>
-
-<details>
-<summary>Phase 2: Social DeFi (Q2 2025) 🔜</summary>
+### Phase 2: Social DeFi (Q2 2025) 🔜
 
 - [ ] Native ETH tipping
 - [ ] Token-gated premium content
@@ -699,30 +490,21 @@ gantt
 - [ ] Subscription model
 - [ ] Reputation tokens
 
-</details>
-
-<details>
-<summary>Phase 3: Multi-Chain Identity (Q3 2025) 🔮</summary>
+### Phase 3: Multi-Chain Identity (Q3 2025) 🔮
 
 - [ ] CCIP-Read for cross-chain resolution
 - [ ] L2 subname support (Optimism, Base, Arbitrum)
 - [ ] Gasless posting via account abstraction
 - [ ] Multi-chain feed aggregation
 
-</details>
-
-<details>
-<summary>Phase 4: Decentralized Governance (Q4 2025) 🔮</summary>
+### Phase 4: Decentralized Governance (Q4 2025) 🔮
 
 - [ ] DAO-controlled content policies
 - [ ] Community moderation tokens
 - [ ] Open plugin architecture
 - [ ] Governance proposals for features
 
-</details>
-
-<details>
-<summary>Phase 5: Global Scale (2026) 🔮</summary>
+### Phase 5: Global Scale (2026) 🔮
 
 - [ ] ENS Namechain integration
 - [ ] AI-powered content discovery
@@ -730,8 +512,6 @@ gantt
 - [ ] Interoperability with Lens Protocol
 - [ ] Farcaster cross-posting
 - [ ] Bluesky AT Protocol bridge
-
-</details>
 
 ---
 
@@ -985,6 +765,16 @@ yarn lint
 ## 📄 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+
+Copyright (c) 2025 SocialENS Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction...
+```
 
 ---
 
