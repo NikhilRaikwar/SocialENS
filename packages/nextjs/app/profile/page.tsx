@@ -14,7 +14,6 @@ const SEPOLIA_RESOLVER = "0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5";
 
 export default function ProfilePage() {
   const { address } = useAccount();
-  // Read ENS data from SEPOLIA
   const { data: ensName } = useEnsName({ address, chainId: 11155111 });
   const { data: fetchedBio } = useEnsText({ name: ensName || "", key: "description", chainId: 11155111 });
   const { data: fetchedTip } = useEnsText({ name: ensName || "", key: "social.tipAmount", chainId: 11155111 });
@@ -41,7 +40,6 @@ export default function ProfilePage() {
     try {
       const node = namehash(ensName);
 
-      // Update bio in ENS text records
       await writeTx(() =>
         writeContractAsync({
           address: SEPOLIA_RESOLVER,
@@ -51,7 +49,6 @@ export default function ProfilePage() {
         }),
       );
 
-      // Update tip preference in ENS text records
       await writeTx(() =>
         writeContractAsync({
           address: SEPOLIA_RESOLVER,
@@ -70,126 +67,121 @@ export default function ProfilePage() {
     }
   };
 
-  // Avatar URL using Vercel's service (reliable, no CORS issues)
   const avatarUrl = `https://avatar.vercel.sh/${ensName || address}`;
 
   return (
     <EnsGuard>
-      <div className="max-w-6xl mx-auto px-4 py-8 relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="hidden md:block md:col-span-4 lg:col-span-3">
-            <Sidebar />
-          </div>
+      <div className="min-h-screen bg-base-100 relative overflow-hidden">
+        {/* Abstract Background */}
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px] pointer-events-none animate-pulse-slow"></div>
+        <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-secondary/10 rounded-full blur-[150px] pointer-events-none animate-float"></div>
 
-          <div className="col-span-1 md:col-span-8 lg:col-span-9">
-            <div className="bg-base-100 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] shadow-xl border border-base-300 transition-all hover:border-primary/20">
-              {/* Header */}
-              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
-                <div className="flex items-center gap-4">
-                  {/* Profile Avatar */}
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-full blur-lg opacity-30"></div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={avatarUrl}
-                      alt="Profile Avatar"
-                      className="w-16 h-16 rounded-full border-4 border-base-100 shadow-xl relative z-10 object-cover"
-                    />
+        <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            {/* Sidebar Column */}
+            <div className="hidden lg:block lg:col-span-3">
+              <Sidebar />
+            </div>
+
+            {/* Main Content Column */}
+            <div className="col-span-1 lg:col-span-9">
+
+              {/* Profile Header Card */}
+              <div className="glass-panel rounded-[3rem] p-1 border border-white/10 mb-8 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10 opacity-50"></div>
+
+                <div className="bg-base-100/40 backdrop-blur-xl rounded-[2.9rem] p-8 md:p-12 relative z-10">
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+
+                    {/* Avatar */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+                      <img
+                        src={avatarUrl}
+                        alt="Profile"
+                        className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/10 shadow-2xl relative z-10 object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute -bottom-2 -right-2 bg-base-100 rounded-full p-2 border border-white/10 shadow-lg z-20">
+                        <span className="text-2xl">✨</span>
+                      </div>
+                    </div>
+
+                    {/* Info */}
+                    <div className="text-center md:text-left flex-1">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-[10px] font-bold tracking-widest uppercase mb-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        Sepolia Network
+                      </div>
+                      <h1 className="text-4xl md:text-5xl font-black mb-2 tracking-tight text-gradient">
+                        {ensName || "Anonymous"}
+                      </h1>
+                      <p className="text-lg opacity-60 font-light max-w-xl mx-auto md:mx-0 leading-relaxed">
+                        Manage your decentralized identity. Your bio, tipping preferences, and data are stored directly on-chain.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                      Profile Settings
-                    </h1>
-                    <p className="text-sm opacity-60">Your decentralized profile on ENS</p>
-                  </div>
-                </div>
-                <div className="badge badge-primary badge-outline py-3 px-4 rounded-full flex gap-2 font-bold text-xs">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                  Sepolia ENS
                 </div>
               </div>
 
-              {/* Form Fields */}
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* ENS Name Field */}
-                  <div className="form-control">
-                    <label className="label py-1">
-                      <span className="label-text font-bold uppercase tracking-wider text-xs opacity-60">🌐 ENS Name</span>
-                    </label>
+              {/* Settings Form */}
+              <div className="glass-panel p-8 md:p-10 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none">
+                  <span className="text-9xl">⚙️</span>
+                </div>
+
+                <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                  Edit Profile
+                  <div className="h-px flex-1 bg-white/10 ml-4"></div>
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  <div className="form-control gap-2">
+                    <label className="label-text font-bold uppercase tracking-widest text-xs opacity-50 ml-1">Display Name</label>
                     <input
                       type="text"
-                      value={ensName || "No ENS name found"}
-                      className="input input-bordered w-full bg-base-200/50 rounded-xl font-bold text-base h-12"
+                      value={ensName || ""}
                       disabled
+                      className="input input-lg bg-white/5 border border-white/5 rounded-2xl text-lg font-bold opacity-70 cursor-not-allowed"
                     />
+                    <span className="text-[10px] opacity-30 ml-2">Managed by ENS Protocol</span>
                   </div>
 
-                  {/* Tip Amount Field */}
-                  <div className="form-control">
-                    <label className="label py-1">
-                      <span className="label-text font-bold uppercase tracking-wider text-xs text-success">💰 Preferred Tip (ETH)</span>
-                    </label>
+                  <div className="form-control gap-2">
+                    <label className="label-text font-bold uppercase tracking-widest text-xs text-success ml-1">Tip Amount (ETH)</label>
                     <input
                       type="text"
-                      placeholder="0.001"
-                      className="input input-bordered w-full rounded-xl bg-base-100 focus:border-success transition-all h-12"
                       value={tipAmount}
-                      onChange={e => setTipAmount(e.target.value)}
+                      onChange={(e) => setTipAmount(e.target.value)}
+                      className="input input-lg bg-base-100 border border-white/10 rounded-2xl text-lg font-mono focus:border-success/50 focus:shadow-neon transition-all"
+                      placeholder="0.001"
                     />
+                    <span className="text-[10px] opacity-30 ml-2">Default verification cost for tips</span>
                   </div>
                 </div>
 
-                {/* Biography Field */}
-                <div className="form-control">
-                  <label className="label py-1">
-                    <span className="label-text font-bold uppercase tracking-wider text-xs text-primary">📝 Biography</span>
-                  </label>
+                <div className="form-control gap-2 mb-10">
+                  <label className="label-text font-bold uppercase tracking-widest text-xs text-primary ml-1">Bio</label>
                   <textarea
-                    className="textarea textarea-bordered h-24 rounded-xl bg-base-100 text-base focus:border-primary transition-all resize-none"
-                    placeholder="Tell the world who you are..."
                     value={bio}
-                    onChange={e => setBio(e.target.value)}
+                    onChange={(e) => setBio(e.target.value)}
+                    className="textarea textarea-lg bg-base-100 border border-white/10 rounded-2xl text-lg min-h-[160px] focus:border-primary/50 focus:shadow-neon transition-all resize-none leading-relaxed"
+                    placeholder="Tell your story..."
                   />
                 </div>
 
-                {/* Save Button */}
-                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div className="flex justify-end pt-6 border-t border-white/5">
                   <button
-                    className={`btn btn-primary rounded-xl px-8 shadow-lg hover:scale-105 transition-all min-h-12 ${loading ? "loading" : ""}`}
                     onClick={handleSave}
                     disabled={loading || !ensName}
+                    className="btn btn-primary btn-lg rounded-full px-10 shadow-neon hover:scale-105 transition-all font-black text-black relative overflow-hidden group"
                   >
-                    {loading ? (
-                      <>
-                        <span className="loading loading-spinner loading-sm"></span>
-                        Saving...
-                      </>
-                    ) : (
-                      "💾 Save to ENS"
-                    )}
+                    {loading ? <span className="loading loading-spinner"></span> : "Save Changes"}
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                   </button>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-base-200/50 rounded-xl text-xs opacity-60">
-                    <span>⛓️</span> Stored on Sepolia
-                  </div>
                 </div>
               </div>
 
-              {/* ENS Record Preview */}
-              <div className="mt-8 p-4 bg-base-200/30 rounded-xl border border-base-300">
-                <h3 className="text-xs font-black uppercase tracking-wider opacity-50 mb-3">📋 Your ENS Text Records</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="p-3 bg-base-100/50 rounded-lg overflow-hidden">
-                    <span className="text-primary font-mono text-xs">description:</span>
-                    <p className="mt-1 opacity-70 truncate">{bio || "(not set)"}</p>
-                  </div>
-                  <div className="p-3 bg-base-100/50 rounded-lg overflow-hidden">
-                    <span className="text-success font-mono text-xs">social.tipAmount:</span>
-                    <p className="mt-1 opacity-70">{tipAmount} ETH</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

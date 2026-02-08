@@ -18,7 +18,7 @@ interface CastProps {
 
 export const CastCard = ({ cast }: CastProps) => {
   const authorName = cast.author || (cast as any).node || "Unknown";
-  // Note: Not using useEnsAvatar as it causes CORS issues on Sepolia
+  // Note: Not using useEnsAvatar to avoid CORS issues
   const { data: authorAddress } = useEnsAddress({
     name: authorName.includes(".") ? authorName : "",
     chainId: 11155111,
@@ -32,7 +32,7 @@ export const CastCard = ({ cast }: CastProps) => {
   const { data: preferredTip } = useEnsText({
     name: authorName || "",
     key: "tipAmount",
-    chainId: 11155111, // Tip preferences stored on Sepolia
+    chainId: 11155111,
   });
 
   const tipValue = preferredTip || "0.001";
@@ -40,7 +40,7 @@ export const CastCard = ({ cast }: CastProps) => {
   const handleTip = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!targetAddress) {
-      notification.error("Could not find creator's wallet address. Try resolving their ENS name first.");
+      notification.error("Could not find creator's wallet address.");
       return;
     }
 
@@ -51,19 +51,19 @@ export const CastCard = ({ cast }: CastProps) => {
           value: parseEther(tipValue),
         }),
       );
-      notification.success(`Tip of ${tipValue} ETH sent successfully!`);
+      notification.success(`Tip sent!`);
     } catch {
-      // Notification handled by writeTx wrapper usually, or silent catch
+      // Handled
     }
   };
 
   return (
-    <div className="bg-base-100 p-6 border-b border-base-300 hover:bg-base-200/40 transition-all cursor-pointer group relative overflow-hidden">
-      <div className="flex gap-4">
+    <div className="glass-panel p-6 rounded-[1.5rem] transition-all duration-300 hover:scale-[1.01] hover:shadow-neon group relative overflow-hidden border border-white/5">
+      <div className="flex gap-4 relative z-10">
         <div className="flex-shrink-0">
           <Link href={`/${authorName.replace(".eth", "")}`} onClick={(e) => e.stopPropagation()}>
             <div className="avatar">
-              <div className="w-14 h-14 rounded-2xl ring ring-primary/10 ring-offset-base-100 ring-offset-2 overflow-hidden">
+              <div className="w-14 h-14 rounded-full ring-2 ring-white/10 ring-offset-2 ring-offset-base-100 overflow-hidden hover:scale-110 transition-transform shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://avatar.vercel.sh/${authorName || "unknown"}`}
@@ -71,36 +71,45 @@ export const CastCard = ({ cast }: CastProps) => {
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${authorName || "unknown"}`;
                   }}
+                  className="object-cover w-full h-full"
                 />
               </div>
             </div>
           </Link>
         </div>
-        <div className="flex-grow min-w-0">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2 min-w-0 pr-12">
+
+        <div className="flex-grow min-w-0 pt-1">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 min-w-0">
               <Link
                 href={`/${authorName.replace(".eth", "")}`}
-                className="font-black text-lg hover:text-primary transition-colors truncate max-w-[140px] sm:max-w-[220px]"
+                className="font-bold text-lg hover:text-primary transition-colors truncate tracking-tight"
                 onClick={(e) => e.stopPropagation()}
-                title={authorName}
               >
                 {authorName}
               </Link>
-              <span className="opacity-40 text-sm whitespace-nowrap">
-                · {formatDistanceToNow(new Date(cast.timestamp), { addSuffix: true })}
+              <span className="opacity-40 text-xs font-mono">
+                {formatDistanceToNow(new Date(cast.timestamp), { addSuffix: true })}
               </span>
             </div>
+
             <button
               onClick={handleTip}
-              className="btn btn-primary btn-xs rounded-full opacity-0 group-hover:opacity-100 hover:scale-110 transition-all font-black shadow-lg"
+              className="btn btn-secondary btn-xs rounded-full opacity-0 group-hover:opacity-100 transition-all font-bold shadow-lg scale-90 group-hover:scale-100"
+              title={`Tip ${tipValue} ETH`}
             >
               💸 Tip
             </button>
           </div>
-          <p className="text-xl break-words whitespace-pre-wrap leading-relaxed opacity-90 pr-2">{cast.text}</p>
+
+          <p className="text-xl font-light leading-relaxed opacity-90 break-words whitespace-pre-wrap">
+            {cast.text}
+          </p>
         </div>
       </div>
+
+      {/* Subtle background glow on hover */}
+      <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none blur-3xl"></div>
     </div>
   );
 };

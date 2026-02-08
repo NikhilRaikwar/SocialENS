@@ -2,122 +2,120 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
 @theme {
-  --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
-  --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --font-display: var(--font-syne), "Syne", sans-serif;
+  --font-body: var(--font-outfit), "Outfit", sans-serif;
+
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  --shadow-neon: 0 0 10px var(--color-primary), 0 0 20px var(--color-primary);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
 }
 
-@plugin "daisyui" {
-  themes:
-    light,
-    dark --prefersdark;
-}
-
-@plugin "daisyui/theme" {
-  name: "light";
-
-  --color-primary: #7c65c1; /* Farcaster Purple */
-  --color-primary-content: #ffffff;
-  --color-secondary: #e8e4f6;
-  --color-secondary-content: #7c65c1;
-  --color-accent: #b9adff;
-  --color-accent-content: #212638;
-  --color-neutral: #212638;
-  --color-neutral-content: #ffffff;
-  --color-base-100: #ffffff;
-  --color-base-200: #f7f5ff;
-  --color-base-300: #e8e4f6;
-  --color-base-content: #212638;
-  --color-info: #7c65c1;
-  --color-success: #34eeb6;
-  --color-warning: #ffcf72;
-  --color-error: #ff8863;
-
-  --radius-field: 9999rem;
-  --radius-box: 1.5rem;
-  --tt-tailw: 6px;
-}
-
-@plugin "daisyui/theme" {
-  name: "dark";
-
-  --color-primary: #7c65c1;
-  --color-primary-content: #ffffff;
-  --color-secondary: #2a2438;
-  --color-secondary-content: #e8e4f6;
-  --color-accent: #4969a6;
-  --color-accent-content: #f9fbff;
-  --color-neutral: #f9fbff;
-  --color-neutral-content: #385183;
-  --color-base-100: #1d1929;
-  --color-base-200: #121019;
-  --color-base-300: #1d1929;
-  --color-base-content: #f9fbff;
-  --color-info: #7c65c1;
-  --color-success: #34eeb6;
-  --color-warning: #ffcf72;
-  --color-error: #ff8863;
-
-  --radius-field: 9999rem;
-  --radius-box: 1.5rem;
-
-  --tt-tailw: 6px;
-  --tt-bg: var(--color-primary);
-}
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+/* Base Styles using new fonts */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-
-  p {
-    margin: 1rem 0;
-  }
-
   body {
-    min-height: 100vh;
+    font-family: var(--font-body);
+    @apply antialiased;
   }
 
   h1,
   h2,
   h3,
-  h4 {
-    margin-bottom: 0.5rem;
-    line-height: 1;
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight;
   }
 }
 
-:root,
-[data-theme] {
-  background: var(--color-base-200);
+@plugin "daisyui" {
+  themes: light, dark --prefersdark;
 }
 
-.btn {
-  @apply shadow-md;
+@plugin "daisyui/theme" {
+  name: "light";
+
+  --color-primary: #1a1a1a;
+  /* Deep Charcoal */
+  --color-primary-content: #ffffff;
+  --color-secondary: #5e17eb;
+  /* Electric Violet */
+  --color-secondary-content: #ffffff;
+  --color-accent: #ff3366;
+  /* Hot Pink */
+  --color-accent-content: #ffffff;
+
+  --color-neutral: #f3f4f6;
+  --color-neutral-content: #1a1a1a;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #f8fafc;
+  --color-base-300: #e2e8f0;
+  --color-base-content: #1e293b;
+
+  --radius-box: 1rem;
+  --radius-btn: 0.75rem;
 }
 
-.btn.btn-ghost {
-  @apply shadow-none;
+@plugin "daisyui/theme" {
+  name: "dark";
+
+  /* Neo-Noir Aesthetic */
+  --color-primary: #ccff00;
+  /* Acid Lime - Very distinctive */
+  --color-primary-content: #000000;
+
+  --color-secondary: #7000ff;
+  /* Deep Electric Purple */
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #00f0ff;
+  /* Cyber Cyan */
+  --color-accent-content: #000000;
+
+  --color-neutral: #1a1a1a;
+  --color-neutral-content: #ffffff;
+
+  --color-base-100: #050505;
+  /* Pure Black */
+  --color-base-200: #0a0a0a;
+  /* Very Dark Gray */
+  --color-base-300: #141414;
+  /* Panel Gray */
+  --color-base-content: #e2e8f0;
+
+  --color-info: #00f0ff;
+  --color-success: #ccff00;
+  --color-warning: #ffbf00;
+  --color-error: #ff3366;
+
+  --radius-box: 1.2rem;
+  --radius-btn: 0.8rem;
 }
 
-.link {
-  text-underline-offset: 2px;
+.glass-panel {
+  @apply bg-base-100/60 backdrop-blur-xl border border-white/5 shadow-glass;
 }
 
-.link:hover {
-  opacity: 80%;
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-neon;
 }
