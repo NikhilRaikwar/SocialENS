@@ -90,6 +90,7 @@ export default function ProfilePage() {
                   {/* Profile Avatar */}
                   <div className="relative flex-shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-full blur-lg opacity-30"></div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={avatarUrl}
                       alt="Profile Avatar"

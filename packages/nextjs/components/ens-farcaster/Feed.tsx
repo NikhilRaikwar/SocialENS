@@ -46,7 +46,7 @@ export const Feed = () => {
             allCasts.push(...parsed);
             console.log(`✨ Found ${parsed.length} casts from ${ensName}`);
           }
-        } catch (e) {
+        } catch {
           console.warn("No casts found for current user");
         }
       }
@@ -87,7 +87,7 @@ export const Feed = () => {
               const parsed = JSON.parse(castsJson);
               allCasts.push(...parsed);
             }
-          } catch (e) {
+          } catch {
             // Skip failed reads
           }
         }

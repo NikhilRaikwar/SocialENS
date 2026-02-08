@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { Address } from "@scaffold-ui/components";
 import { useAccount, useEnsName, useEnsText } from "wagmi";
 
 export const Sidebar = () => {
@@ -24,6 +22,7 @@ export const Sidebar = () => {
         <div className="flex flex-col items-center text-center mb-4">
           <div className="relative mb-4">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-full blur-xl group-hover:blur-2xl transition-all"></div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={avatarUrl}
               alt="avatar"

@@ -42,7 +42,7 @@ export const Compose = () => {
                     args: [node, "social.casts"],
                 }) as string;
                 currentCasts = JSON.parse(latestCastsJson || "[]");
-            } catch (fetchError) {
+            } catch {
                 console.warn("No existing casts found, starting fresh.");
             }
 

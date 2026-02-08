@@ -1,9 +1,10 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
 import { namehash } from "viem";
-import { useEnsAvatar, useEnsText, usePublicClient, useEnsAddress } from "wagmi";
+import { useEnsAvatar, useEnsText, usePublicClient } from "wagmi";
 import { CastCard } from "~~/components/ens-farcaster/CastCard";
 import { EnsGuard } from "~~/components/ens-farcaster/EnsGuard";
 import { FollowButton } from "~~/components/ens-farcaster/FollowButton";
@@ -17,21 +18,33 @@ export default function UserProfilePage() {
   const params = useParams();
   const nameParam = params?.name as string;
 
-  if (nameParam === "favicon.ico") return null;
+  // Derive fullName but don't return early yet to preserve hook order
+  const fullName =
+    nameParam && nameParam !== "favicon.ico"
+      ? nameParam.endsWith(".eth")
+        ? nameParam
+        : `${nameParam}.eth`
+      : "";
 
-  const fullName = nameParam?.endsWith(".eth") ? nameParam : `${nameParam}.eth`;
   // Use Sepolia for reading
   const publicClient = usePublicClient({ chainId: 11155111 });
   const [casts, setCasts] = useState<any[]>([]);
 
   // Read ENS data from SEPOLIA
-  const { data: bio } = useEnsText({ name: fullName, key: "description", chainId: 11155111 });
-  const { data: avatar } = useEnsAvatar({ name: fullName, chainId: 11155111 });
-  const { data: userAddress } = useEnsAddress({ name: fullName, chainId: 11155111 });
+  // Pass undefined if name is invalid to disable the query internally or just let it return null
+  const { data: bio } = useEnsText({
+    name: fullName || undefined,
+    key: "description",
+    chainId: 11155111,
+  });
+  const { data: avatar } = useEnsAvatar({
+    name: fullName || undefined,
+    chainId: 11155111,
+  });
 
   useEffect(() => {
     const fetchCasts = async () => {
-      if (!publicClient) return;
+      if (!publicClient || !fullName) return;
       try {
         const node = namehash(fullName);
 
@@ -51,6 +64,9 @@ export default function UserProfilePage() {
     fetchCasts();
   }, [fullName, publicClient]);
 
+  // Now safe to return early if invalid param
+  if (nameParam === "favicon.ico" || !fullName) return null;
+
   return (
     <EnsGuard>
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -65,6 +81,7 @@ export default function UserProfilePage() {
                 <div className="h-32 bg-gradient-to-r from-primary to-secondary"></div>
                 <div className="relative p-6 -mt-16">
                   <div className="flex flex-col sm:flex-row items-center gap-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={avatar || `https://avatar.vercel.sh/${fullName}`}
                       alt="avatar"

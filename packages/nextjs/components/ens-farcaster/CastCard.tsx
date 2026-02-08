@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { parseEther } from "viem";
-import { useAccount, useEnsAddress, useEnsName, useSendTransaction, useEnsText } from "wagmi";
+import { useEnsAddress, useEnsText, useSendTransaction } from "wagmi";
 import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -19,7 +19,10 @@ interface CastProps {
 export const CastCard = ({ cast }: CastProps) => {
   const authorName = cast.author || (cast as any).node || "Unknown";
   // Note: Not using useEnsAvatar as it causes CORS issues on Sepolia
-  const { data: authorAddress } = useEnsAddress({ name: authorName.includes(".") ? authorName : "", chainId: 11155111 });
+  const { data: authorAddress } = useEnsAddress({
+    name: authorName.includes(".") ? authorName : "",
+    chainId: 11155111,
+  });
   const { sendTransactionAsync } = useSendTransaction();
   const writeTx = useTransactor();
 
@@ -29,7 +32,7 @@ export const CastCard = ({ cast }: CastProps) => {
   const { data: preferredTip } = useEnsText({
     name: authorName || "",
     key: "tipAmount",
-    chainId: 11155111 // Tip preferences stored on Sepolia
+    chainId: 11155111, // Tip preferences stored on Sepolia
   });
 
   const tipValue = preferredTip || "0.001";
@@ -49,8 +52,8 @@ export const CastCard = ({ cast }: CastProps) => {
         }),
       );
       notification.success(`Tip of ${tipValue} ETH sent successfully!`);
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // Notification handled by writeTx wrapper usually, or silent catch
     }
   };
 
@@ -58,12 +61,12 @@ export const CastCard = ({ cast }: CastProps) => {
     <div className="bg-base-100 p-6 border-b border-base-300 hover:bg-base-200/40 transition-all cursor-pointer group relative overflow-hidden">
       <div className="flex gap-4">
         <div className="flex-shrink-0">
-          <Link href={`/${authorName.replace(".eth", "")}`} onClick={e => e.stopPropagation()}>
+          <Link href={`/${authorName.replace(".eth", "")}`} onClick={(e) => e.stopPropagation()}>
             <div className="avatar">
               <div className="w-14 h-14 rounded-2xl ring ring-primary/10 ring-offset-base-100 ring-offset-2 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://avatar.vercel.sh/${authorName || "unknown"}`}
-
                   alt="avatar"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${authorName || "unknown"}`;
@@ -79,7 +82,7 @@ export const CastCard = ({ cast }: CastProps) => {
               <Link
                 href={`/${authorName.replace(".eth", "")}`}
                 className="font-black text-lg hover:text-primary transition-colors truncate max-w-[140px] sm:max-w-[220px]"
-                onClick={e => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
                 title={authorName}
               >
                 {authorName}
@@ -95,9 +98,7 @@ export const CastCard = ({ cast }: CastProps) => {
               💸 Tip
             </button>
           </div>
-          <p className="text-xl break-words whitespace-pre-wrap leading-relaxed opacity-90 pr-2">
-            {cast.text}
-          </p>
+          <p className="text-xl break-words whitespace-pre-wrap leading-relaxed opacity-90 pr-2">{cast.text}</p>
         </div>
       </div>
     </div>
