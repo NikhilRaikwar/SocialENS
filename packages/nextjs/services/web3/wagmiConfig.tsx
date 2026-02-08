@@ -17,8 +17,27 @@ export const wagmiConfig = createConfig({
   connectors: wagmiConnectors(),
   ssr: true,
   client: ({ chain }) => {
-    const mainnetFallbackWithDefaultRPC = [http("https://mainnet.rpc.buidlguidl.com")];
-    let rpcFallbacks = [...(chain.id === mainnet.id ? mainnetFallbackWithDefaultRPC : []), http()];
+    const mainnetFallbackWithDefaultRPC = [
+      http("https://eth.drpc.org"),
+      http("https://cloudflare-eth.com"),
+      http("https://mainnet.rpc.buidlguidl.com")
+    ];
+
+    const baseSepoliaFallback = [
+      http("https://base-sepolia.publicnode.com"),
+      http("https://base-sepolia.blockpi.network/v1/rpc/public"),
+      http("https://sepolia.base.org")
+    ];
+
+    let rpcFallbacks = [];
+    if (chain.id === 1) {
+      rpcFallbacks = [...mainnetFallbackWithDefaultRPC];
+    } else if (chain.id === 84532) {
+      rpcFallbacks = [...baseSepoliaFallback];
+    } else {
+      rpcFallbacks = [http()];
+    }
+
     const rpcOverrideUrl = (scaffoldConfig.rpcOverrides as ScaffoldConfig["rpcOverrides"])?.[chain.id];
     if (rpcOverrideUrl) {
       rpcFallbacks = [http(rpcOverrideUrl), ...rpcFallbacks];
