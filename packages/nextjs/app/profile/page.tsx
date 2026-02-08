@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { namehash } from "viem";
-import { useAccount, useEnsName, useEnsText, useWriteContract } from "wagmi";
+import { useAccount, useEnsAvatar, useEnsName, useEnsText, useWriteContract } from "wagmi";
 import { EnsGuard } from "~~/components/ens-farcaster/EnsGuard";
 import { Sidebar } from "~~/components/ens-farcaster/Sidebar";
+import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 import { PUBLIC_RESOLVER_ABI } from "~~/utils/ens";
 import { notification } from "~~/utils/scaffold-eth";
-import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 
 // ENS Public Resolver on Ethereum Sepolia (official deployment)
 const SEPOLIA_RESOLVER = "0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5";
@@ -67,7 +67,8 @@ export default function ProfilePage() {
     }
   };
 
-  const avatarUrl = `https://avatar.vercel.sh/${ensName || address}`;
+  const { data: ensAvatar } = useEnsAvatar({ name: ensName || undefined, chainId: 11155111 });
+  const avatarUrl = ensAvatar || `https://avatar.vercel.sh/${ensName || address}`;
 
   return (
     <EnsGuard>
@@ -78,7 +79,6 @@ export default function ProfilePage() {
 
         <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
             {/* Sidebar Column */}
             <div className="hidden lg:block lg:col-span-3">
               <Sidebar />
@@ -86,14 +86,12 @@ export default function ProfilePage() {
 
             {/* Main Content Column */}
             <div className="col-span-1 lg:col-span-9">
-
               {/* Profile Header Card */}
               <div className="glass-panel rounded-[3rem] p-1 border border-white/10 mb-8 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10 opacity-50"></div>
 
                 <div className="bg-base-100/40 backdrop-blur-xl rounded-[2.9rem] p-8 md:p-12 relative z-10">
                   <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-
                     {/* Avatar */}
                     <div className="relative group">
                       <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary rounded-full blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
@@ -114,11 +112,12 @@ export default function ProfilePage() {
                         <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
                         Sepolia Network
                       </div>
-                      <h1 className="text-4xl md:text-5xl font-black mb-2 tracking-tight text-gradient">
+                      <h1 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight text-primary">
                         {ensName || "Anonymous"}
                       </h1>
                       <p className="text-lg opacity-60 font-light max-w-xl mx-auto md:mx-0 leading-relaxed">
-                        Manage your decentralized identity. Your bio, tipping preferences, and data are stored directly on-chain.
+                        Manage your decentralized identity. Your bio, tipping preferences, and data are stored directly
+                        on-chain.
                       </p>
                     </div>
                   </div>
@@ -138,7 +137,9 @@ export default function ProfilePage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   <div className="form-control gap-2">
-                    <label className="label-text font-bold uppercase tracking-widest text-xs opacity-50 ml-1">Display Name</label>
+                    <label className="label-text font-bold uppercase tracking-widest text-xs opacity-50 ml-1">
+                      Display Name
+                    </label>
                     <input
                       type="text"
                       value={ensName || ""}
@@ -149,12 +150,14 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="form-control gap-2">
-                    <label className="label-text font-bold uppercase tracking-widest text-xs text-success ml-1">Tip Amount (ETH)</label>
+                    <label className="label-text font-bold uppercase tracking-widest text-xs text-success ml-1">
+                      Tip Amount (ETH)
+                    </label>
                     <input
                       type="text"
                       value={tipAmount}
-                      onChange={(e) => setTipAmount(e.target.value)}
-                      className="input input-lg bg-base-100 border border-white/10 rounded-2xl text-lg font-mono focus:border-success/50 focus:shadow-neon transition-all"
+                      onChange={e => setTipAmount(e.target.value)}
+                      className="input input-lg bg-base-100 border border-white/10 rounded-2xl text-lg font-mono focus:border-success/50 transition-all"
                       placeholder="0.001"
                     />
                     <span className="text-[10px] opacity-30 ml-2">Default verification cost for tips</span>
@@ -162,11 +165,13 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="form-control gap-2 mb-10">
-                  <label className="label-text font-bold uppercase tracking-widest text-xs text-primary ml-1">Bio</label>
+                  <label className="label-text font-bold uppercase tracking-widest text-xs text-primary ml-1">
+                    Bio
+                  </label>
                   <textarea
                     value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    className="textarea textarea-lg bg-base-100 border border-white/10 rounded-2xl text-lg min-h-[160px] focus:border-primary/50 focus:shadow-neon transition-all resize-none leading-relaxed"
+                    onChange={e => setBio(e.target.value)}
+                    className="textarea textarea-lg bg-base-100 border border-white/10 rounded-2xl text-lg min-h-[160px] focus:border-primary/50 transition-all resize-none leading-relaxed"
                     placeholder="Tell your story..."
                   />
                 </div>
@@ -175,14 +180,13 @@ export default function ProfilePage() {
                   <button
                     onClick={handleSave}
                     disabled={loading || !ensName}
-                    className="btn btn-primary btn-lg rounded-full px-10 shadow-neon hover:scale-105 transition-all font-black text-black relative overflow-hidden group"
+                    className="btn btn-primary btn-lg rounded-full px-10 hover:scale-105 transition-all font-bold text-white relative overflow-hidden group"
                   >
                     {loading ? <span className="loading loading-spinner"></span> : "Save Changes"}
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

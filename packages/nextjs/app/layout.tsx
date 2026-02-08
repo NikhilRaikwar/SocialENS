@@ -11,7 +11,8 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata = getMetadata({
   title: "SocialENS | Decentralized Social Network",
-  description: "The first fully decentralized social network powered by ENS text records. Your profile, follows, and posts stored 100% on-chain on Ethereum Sepolia.",
+  description:
+    "The first fully decentralized social network powered by ENS text records. Your profile, follows, and posts stored 100% on-chain on Ethereum Sepolia.",
   imageRelativePath: "/logo.png",
 });
 
@@ -19,7 +20,10 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <html suppressHydrationWarning className={`${syne.variable} ${outfit.variable}`}>
       <head>
-        <meta name="keywords" content="ENS, Ethereum, Social Network, Decentralized, Web3, Farcaster, Blockchain, DeFi, Sepolia" />
+        <meta
+          name="keywords"
+          content="ENS, Ethereum, Social Network, Decentralized, Web3, Farcaster, Blockchain, DeFi, Sepolia"
+        />
         <meta name="author" content="SocialENS Team" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="SocialENS" />

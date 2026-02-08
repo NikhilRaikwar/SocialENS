@@ -20,10 +20,8 @@ export const wagmiConfig = createConfig({
     const mainnetFallbackWithDefaultRPC = [
       http("https://eth.drpc.org"),
       http("https://cloudflare-eth.com"),
-      http("https://mainnet.rpc.buidlguidl.com")
+      http("https://mainnet.rpc.buidlguidl.com"),
     ];
-
-
 
     let rpcFallbacks = [];
     if (chain.id === 1) {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useAccount, useEnsName, useEnsText } from "wagmi";
+import { useAccount, useEnsAvatar, useEnsName, useEnsText } from "wagmi";
 
 export const Sidebar = () => {
   const { address } = useAccount();
@@ -10,12 +10,13 @@ export const Sidebar = () => {
   const { data: followingJson } = useEnsText({ name: ensName || "", key: "social.following", chainId: 11155111 });
 
   const followingCount = JSON.parse(followingJson || "[]").length;
-  const avatarUrl = `https://avatar.vercel.sh/${ensName || address}`;
+  const { data: ensAvatar } = useEnsAvatar({ name: ensName || undefined, chainId: 11155111 });
+  const avatarUrl = ensAvatar || `https://avatar.vercel.sh/${ensName || address}`;
 
   return (
     <div className="flex flex-col gap-6 sticky top-24">
       {/* Profile Card */}
-      <div className="glass-panel p-6 rounded-[2rem] border border-white/5 relative group overflow-hidden transition-all hover:shadow-neon">
+      <div className="glass-panel p-6 rounded-[2rem] border border-white/5 relative group overflow-hidden transition-all hover:border-primary/30">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         <div className="flex flex-col items-center text-center relative z-10">
@@ -30,7 +31,7 @@ export const Sidebar = () => {
           </div>
 
           <div className="w-full">
-            <h2 className="font-black text-xl mb-1 truncate text-gradient" title={ensName || "Anonymous"}>
+            <h2 className="font-bold text-xl mb-1 truncate text-primary/90" title={ensName || "Anonymous"}>
               {ensName || "Anonymous"}
             </h2>
             <div className="flex justify-center mb-3">
@@ -72,7 +73,9 @@ export const Sidebar = () => {
             className="btn btn-ghost justify-start gap-4 rounded-xl h-12 text-lg hover:bg-white/5 hover:pl-6 transition-all duration-300 group"
           >
             <span className="group-hover:scale-125 transition-transform duration-300">{link.icon}</span>
-            <span className="font-medium opacity-70 group-hover:opacity-100 group-hover:text-primary transition-colors">{link.label}</span>
+            <span className="font-medium opacity-70 group-hover:opacity-100 group-hover:text-primary transition-colors">
+              {link.label}
+            </span>
           </Link>
         ))}
       </nav>

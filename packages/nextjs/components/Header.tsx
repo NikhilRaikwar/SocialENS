@@ -4,8 +4,8 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAccount, useEnsName } from "wagmi";
 import { hardhat } from "viem/chains";
+import { useAccount, useEnsName } from "wagmi";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick, useTargetNetwork } from "~~/hooks/scaffold-eth";
@@ -45,8 +45,9 @@ export const HeaderMenuLinks = () => {
             <Link
               href={href}
               passHref
-              className={`${isActive ? "bg-secondary shadow-md" : ""
-                } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
+              className={`${
+                isActive ? "bg-secondary shadow-md" : ""
+              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
             >
               {icon}
               <span>{label}</span>
@@ -87,13 +88,7 @@ export const Header = () => {
           </ul>
         </details>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <Image
-            src="/logo.png"
-            alt="SocialENS Logo"
-            width={40}
-            height={40}
-            className="rounded-xl shadow-lg"
-          />
+          <Image src="/logo.png" alt="SocialENS Logo" width={40} height={40} className="rounded-xl shadow-lg" />
           <div className="flex flex-col">
             <span className="font-black leading-tight text-lg tracking-tight">SocialENS</span>
             <span className="text-[10px] uppercase font-black tracking-widest opacity-40">On-Chain Social</span>

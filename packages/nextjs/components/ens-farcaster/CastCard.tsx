@@ -58,17 +58,17 @@ export const CastCard = ({ cast }: CastProps) => {
   };
 
   return (
-    <div className="glass-panel p-6 rounded-[1.5rem] transition-all duration-300 hover:scale-[1.01] hover:shadow-neon group relative overflow-hidden border border-white/5">
+    <div className="glass-panel p-6 rounded-[1.5rem] transition-all duration-300 group relative overflow-hidden border border-white/5 hover:border-primary/30">
       <div className="flex gap-4 relative z-10">
         <div className="flex-shrink-0">
-          <Link href={`/${authorName.replace(".eth", "")}`} onClick={(e) => e.stopPropagation()}>
+          <Link href={`/${authorName.replace(".eth", "")}`} onClick={e => e.stopPropagation()}>
             <div className="avatar">
               <div className="w-14 h-14 rounded-full ring-2 ring-white/10 ring-offset-2 ring-offset-base-100 overflow-hidden hover:scale-110 transition-transform shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://avatar.vercel.sh/${authorName || "unknown"}`}
                   alt="avatar"
-                  onError={(e) => {
+                  onError={e => {
                     (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${authorName || "unknown"}`;
                   }}
                   className="object-cover w-full h-full"
@@ -84,7 +84,7 @@ export const CastCard = ({ cast }: CastProps) => {
               <Link
                 href={`/${authorName.replace(".eth", "")}`}
                 className="font-bold text-lg hover:text-primary transition-colors truncate tracking-tight"
-                onClick={(e) => e.stopPropagation()}
+                onClick={e => e.stopPropagation()}
               >
                 {authorName}
               </Link>
@@ -102,9 +102,7 @@ export const CastCard = ({ cast }: CastProps) => {
             </button>
           </div>
 
-          <p className="text-xl font-light leading-relaxed opacity-90 break-words whitespace-pre-wrap">
-            {cast.text}
-          </p>
+          <p className="text-xl font-light leading-relaxed opacity-90 break-words whitespace-pre-wrap">{cast.text}</p>
         </div>
       </div>
 

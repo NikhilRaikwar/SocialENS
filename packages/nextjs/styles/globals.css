@@ -9,11 +9,10 @@
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-float: float 6s ease-in-out infinite;
 
-  --shadow-neon: 0 0 10px var(--color-primary), 0 0 20px var(--color-primary);
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 
   @keyframes float {
-
     0%,
     100% {
       transform: translateY(0);
@@ -25,7 +24,7 @@
   }
 }
 
-/* Base Styles using new fonts */
+/* Base Styles */
 @layer base {
   body {
     font-family: var(--font-body);
@@ -44,72 +43,74 @@
 }
 
 @plugin "daisyui" {
-  themes: light, dark --prefersdark;
+  themes:
+    light,
+    dark --prefersdark;
 }
 
 @plugin "daisyui/theme" {
   name: "light";
 
-  --color-primary: #1a1a1a;
-  /* Deep Charcoal */
+  --color-primary: #4f46e5;
+  /* Indigo-600 */
   --color-primary-content: #ffffff;
-  --color-secondary: #5e17eb;
-  /* Electric Violet */
+  --color-secondary: #0ea5e9;
+  /* Sky-500 */
   --color-secondary-content: #ffffff;
-  --color-accent: #ff3366;
-  /* Hot Pink */
+  --color-accent: #10b981;
+  /* Emerald-500 */
   --color-accent-content: #ffffff;
 
-  --color-neutral: #f3f4f6;
-  --color-neutral-content: #1a1a1a;
+  --color-neutral: #1f2937;
+  --color-neutral-content: #ffffff;
 
   --color-base-100: #ffffff;
   --color-base-200: #f8fafc;
   --color-base-300: #e2e8f0;
-  --color-base-content: #1e293b;
+  --color-base-content: #0f172a;
 
   --radius-box: 1rem;
-  --radius-btn: 0.75rem;
+  --radius-btn: 0.6rem;
 }
 
 @plugin "daisyui/theme" {
   name: "dark";
 
-  /* Neo-Noir Aesthetic */
-  --color-primary: #ccff00;
-  /* Acid Lime - Very distinctive */
-  --color-primary-content: #000000;
+  /* ETHGlobal Professional Aesthetic */
+  --color-primary: #6366f1;
+  /* Indigo-500 */
+  --color-primary-content: #ffffff;
 
-  --color-secondary: #7000ff;
-  /* Deep Electric Purple */
+  --color-secondary: #06b6d4;
+  /* Cyan-500 */
   --color-secondary-content: #ffffff;
 
-  --color-accent: #00f0ff;
-  /* Cyber Cyan */
-  --color-accent-content: #000000;
+  --color-accent: #10b981;
+  /* Emerald-500 */
+  --color-accent-content: #ffffff;
 
-  --color-neutral: #1a1a1a;
+  --color-neutral: #111827;
   --color-neutral-content: #ffffff;
 
-  --color-base-100: #050505;
-  /* Pure Black */
-  --color-base-200: #0a0a0a;
-  /* Very Dark Gray */
-  --color-base-300: #141414;
-  /* Panel Gray */
-  --color-base-content: #e2e8f0;
+  --color-base-100: #0f172a;
+  /* Slate-900 */
+  --color-base-200: #1e293b;
+  /* Slate-800 */
+  --color-base-300: #334155;
+  /* Slate-700 */
+  --color-base-content: #f8fafc;
 
-  --color-info: #00f0ff;
-  --color-success: #ccff00;
-  --color-warning: #ffbf00;
-  --color-error: #ff3366;
+  --color-info: #38bdf8;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 
-  --radius-box: 1.2rem;
-  --radius-btn: 0.8rem;
+  --radius-box: 1.25rem;
+  --radius-btn: 0.75rem;
 }
 
 .glass-panel {
-  @apply bg-base-100/60 backdrop-blur-xl border border-white/5 shadow-glass;
+  @apply bg-base-100/70 backdrop-blur-xl border border-white/10 shadow-glass;
 }
 
 .text-gradient {
@@ -117,5 +118,5 @@
 }
 
 .card-hover {
-  @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-neon;
+  @apply transition-all duration-300 hover:scale-[1.01] hover:border-primary/50;
 }
