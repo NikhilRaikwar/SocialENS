@@ -368,8 +368,8 @@ Before you begin, ensure you have:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/ens-farcaster.git
-cd ens-farcaster
+git clone https://github.com/YOUR_USERNAME/socialens.git
+cd socialens
 
 # 2. Install dependencies
 yarn install
@@ -499,7 +499,7 @@ yarn serve
 ## 📁 Project Structure
 
 ```
-ens-farcaster/
+socialens/
 ├── packages/
 │   └── nextjs/
 │       ├── app/                        # Next.js App Router
@@ -509,7 +509,7 @@ ens-farcaster/
 │       │   └── layout.tsx              # Root layout
 │       │
 │       ├── components/
-│       │   └── ens-farcaster/          # Core components
+│       │   └── socialens/          # Core components
 │       │       ├── Compose.tsx         # Cast composition (ENS write)
 │       │       ├── Feed.tsx            # Feed display (ENS read)
 │       │       ├── CastCard.tsx        # Individual cast
@@ -606,7 +606,7 @@ We welcome contributions from the community! Here's how you can help:
 
 1. **Fork the repository**
    ```bash
-   git fork https://github.com/YOUR_USERNAME/ens-farcaster.git
+   git fork https://github.com/YOUR_USERNAME/socialens.git
    ```
 
 2. **Create a feature branch**
