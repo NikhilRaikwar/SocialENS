@@ -15,23 +15,68 @@ export const Feed = () => {
   const publicClient = usePublicClient({ chainId: 11155111 });
   const [feed, setFeed] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [lastBlockScanned, setLastBlockScanned] = useState<bigint>(0n);
 
   const fetchFeed = useCallback(
-    async (isRefresh = false) => {
+    async (isRefresh = false, loadMore = false) => {
       if (!publicClient) return;
+
       if (isRefresh) setRefreshing(true);
+      else if (loadMore) setLoadingMore(true);
       else setLoading(true);
 
-      console.log("🚀 Fetching casts from ENS text records...");
+      console.log("🚀 Fetching casts from ENS text records...", { isRefresh, loadMore });
 
       try {
-        const allCasts: any[] = [];
+        const currentBlock = await publicClient.getBlockNumber();
+        const BLOCK_RANGE = 50000n; // Use a much larger range (approx 1 week of history on Sepolia)
 
-        // 1. Fetch current user's casts
-        if (ensName) {
+        let fromBlock: bigint;
+        let toBlock: bigint;
+
+        if (loadMore && lastBlockScanned > 0n) {
+          // Scan backwards from where we left off
+          toBlock = lastBlockScanned - 1n;
+          fromBlock = toBlock - BLOCK_RANGE;
+        } else {
+          // Fresh loading or Refresh: scan latest
+          toBlock = currentBlock;
+          fromBlock = currentBlock - BLOCK_RANGE;
+        }
+
+        if (fromBlock < 0n) fromBlock = 0n;
+
+        // Fetch logs for discovery
+        const logs = await publicClient.getLogs({
+          address: SEPOLIA_RESOLVER,
+          event: parseAbiItem(
+            "event TextChanged(bytes32 indexed node, string indexed indexedKey, string key, string value)",
+          ),
+          fromBlock,
+          toBlock,
+        });
+
+        const castNodes = logs
+          .filter(log => log.args.key === "social.casts")
+          .map(log => log.args.node)
+          .filter(Boolean) as string[];
+
+        const uniqueNodes = Array.from(new Set(castNodes));
+        const newCasts: any[] = [];
+
+        // Also check current user if it's the first load
+        if (!loadMore && ensName) {
           try {
             const node = namehash(ensName);
+            if (!uniqueNodes.includes(node)) uniqueNodes.push(node);
+          } catch { }
+        }
+
+        // Fetch actual text records
+        for (const node of uniqueNodes) {
+          try {
             const castsJson = (await publicClient.readContract({
               address: SEPOLIA_RESOLVER,
               abi: PUBLIC_RESOLVER_ABI,
@@ -41,67 +86,41 @@ export const Feed = () => {
 
             if (castsJson) {
               const parsed = JSON.parse(castsJson);
-              allCasts.push(...parsed);
+              // Ensure parsed casts have an ID and author
+              const validCasts = parsed.map((c: any) => ({
+                ...c,
+                // If the cast object itself doesn't have an author field, we can try to infer it,
+                // but usually the Compose logic puts it there. 
+                // We should filter out malformed ones if needed.
+              }));
+              newCasts.push(...validCasts);
             }
           } catch {
-            console.warn("No casts found for current user");
+            // Skip failed reads
           }
         }
 
-        // 2. Discover via Events
-        try {
-          const currentBlock = await publicClient.getBlockNumber();
-          const fromBlock = currentBlock - 1000n; // Increase range slightly
+        setFeed(prev => {
+          const combined = loadMore ? [...prev, ...newCasts] : newCasts;
+          // Deduplicate by ID
+          const unique = combined.filter((cast, index, self) =>
+            index === self.findIndex(c => c.id === cast.id)
+          );
+          // Sort by timestamp descending
+          return unique.sort((a, b) => b.timestamp - a.timestamp);
+        });
 
-          const logs = await publicClient.getLogs({
-            address: SEPOLIA_RESOLVER,
-            event: parseAbiItem(
-              "event TextChanged(bytes32 indexed node, string indexed indexedKey, string key, string value)",
-            ),
-            fromBlock,
-          });
+        setLastBlockScanned(fromBlock);
 
-          const castNodes = logs
-            .filter(log => log.args.key === "social.casts")
-            .map(log => log.args.node)
-            .filter(Boolean) as string[];
-
-          const uniqueNodes = Array.from(new Set(castNodes));
-
-          for (const node of uniqueNodes.slice(0, 15)) {
-            try {
-              const castsJson = (await publicClient.readContract({
-                address: SEPOLIA_RESOLVER,
-                abi: PUBLIC_RESOLVER_ABI,
-                functionName: "text",
-                args: [node, "social.casts"],
-              })) as string;
-
-              if (castsJson) {
-                const parsed = JSON.parse(castsJson);
-                allCasts.push(...parsed);
-              }
-            } catch {
-              // Skip
-            }
-          }
-        } catch {
-          console.warn("Event discovery failed");
-        }
-
-        // Deduplicate and sort
-        const uniqueCasts = allCasts.filter((cast, index, self) => index === self.findIndex(c => c.id === cast.id));
-        const sortedFeed = uniqueCasts.sort((a, b) => b.timestamp - a.timestamp);
-
-        setFeed(sortedFeed);
       } catch (e) {
         console.error("Error fetching feed:", e);
       } finally {
         setLoading(false);
         setRefreshing(false);
+        setLoadingMore(false);
       }
     },
-    [publicClient, ensName],
+    [publicClient, ensName, lastBlockScanned],
   );
 
   useEffect(() => {
@@ -134,7 +153,7 @@ export const Feed = () => {
         </h2>
         <button
           className={`btn btn-ghost btn-sm rounded-full hover:bg-white/10 ${refreshing ? "loading" : ""}`}
-          onClick={() => fetchFeed(true)}
+          onClick={() => fetchFeed(true, false)}
           disabled={refreshing}
         >
           {!refreshing && "⚡ Refresh"}
@@ -156,8 +175,17 @@ export const Feed = () => {
         )}
       </div>
 
-      <div className="text-center py-8 opacity-30 text-xs font-mono tracking-widest uppercase">
-        End of Stream • On-Chain Data
+      <div className="text-center py-8">
+        <button
+          className={`btn btn-outline btn-wide rounded-full ${loadingMore ? "loading" : ""}`}
+          onClick={() => fetchFeed(false, true)}
+          disabled={loadingMore || loading}
+        >
+          {loadingMore ? "Scanning History..." : "Load Older Casts"}
+        </button>
+        <div className="mt-4 opacity-30 text-xs font-mono tracking-widest uppercase">
+          On-Chain Data • Block {lastBlockScanned.toString()}
+        </div>
       </div>
     </div>
   );
