@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CastCard } from "./CastCard";
 import { namehash, parseAbiItem } from "viem";
 import { useAccount, useEnsName, usePublicClient } from "wagmi";
@@ -31,7 +31,7 @@ export const Feed = () => {
 
       try {
         const currentBlock = await publicClient.getBlockNumber();
-        const BLOCK_RANGE = 50000n; // Use a much larger range (approx 1 week of history on Sepolia)
+        const BLOCK_RANGE = 2500n; // Increased to 2500n to widen discovery window while staying within reasonable limits
 
         let fromBlock: bigint;
         let toBlock: bigint;
@@ -132,6 +132,8 @@ export const Feed = () => {
     return () => window.removeEventListener("cast-success", handleNewCast);
   }, [fetchFeed]);
 
+
+
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
@@ -177,14 +179,14 @@ export const Feed = () => {
 
       <div className="text-center py-8">
         <button
-          className={`btn btn-outline btn-wide rounded-full ${loadingMore ? "loading" : ""}`}
+          className="btn btn-outline btn-wide rounded-full hover:bg-white/5 transition-all active:scale-95"
           onClick={() => fetchFeed(false, true)}
           disabled={loadingMore || loading}
         >
-          {loadingMore ? "Scanning History..." : "Load Older Casts"}
+          {loadingMore ? "Scanning Chain History..." : "Load Older Casts"}
         </button>
         <div className="mt-4 opacity-30 text-xs font-mono tracking-widest uppercase">
-          On-Chain Data • Block {lastBlockScanned.toString()}
+          Scanning 2,500 Blocks/Click • Last: {lastBlockScanned.toString()}
         </div>
       </div>
     </div>

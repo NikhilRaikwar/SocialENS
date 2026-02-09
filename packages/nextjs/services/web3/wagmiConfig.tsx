@@ -30,6 +30,16 @@ export const wagmiConfig = createConfig({
       rpcFallbacks = [http()];
     }
 
+    // Use multiple high-quality public RPCs for redundancy on Sepolia
+    if (chain.id === 11155111) {
+      rpcFallbacks = [
+        http("https://rpc.ankr.com/eth_sepolia"),
+        http("https://ethereum-sepolia-rpc.publicnode.com"),
+        http("https://sepolia.drpc.org"),
+        ...rpcFallbacks,
+      ];
+    }
+
     const rpcOverrideUrl = (scaffoldConfig.rpcOverrides as ScaffoldConfig["rpcOverrides"])?.[chain.id];
     if (rpcOverrideUrl) {
       rpcFallbacks = [http(rpcOverrideUrl), ...rpcFallbacks];

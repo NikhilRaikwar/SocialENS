@@ -79,16 +79,42 @@ export const FollowButton = ({ targetName, size = "sm" }: { targetName: string; 
     }
   };
 
-  if (ensName === targetName) return null;
+  if (ensName && targetName && ensName.toLowerCase() === targetName.toLowerCase()) return null;
 
   return (
     <button
-      className={`btn btn-${size} rounded-full px-6 ${isFollowing ? "btn-outline" : "btn-primary"} ${loading ? "loading" : ""
-        }`}
       onClick={handleFollow}
-      disabled={loading || !ensName}
+      disabled={loading}
+      className={`
+        relative overflow-hidden transition-all duration-300 rounded-full font-bold tracking-wide
+        ${size === "xs"
+          ? "px-3 py-1 text-[10px] h-6 min-w-[70px]"
+          : size === "sm"
+            ? "px-5 py-1.5 text-xs h-8 min-w-[90px]"
+            : "px-8 py-3 text-sm h-12 min-w-[140px]"
+        }
+        ${isFollowing
+          ? "bg-white/5 border border-white/20 text-white/60 hover:bg-white/10 hover:border-white/40 hover:text-white"
+          : "bg-primary text-primary-content shadow-[0_0_15px_rgba(var(--p),0.4)] hover:shadow-[0_0_25px_rgba(var(--p),0.6)] hover:scale-105 active:scale-95 border border-transparent"
+        }
+        ${loading ? "opacity-50 cursor-wait" : ""}
+      `}
     >
-      {loading ? "..." : isFollowing ? "Unfollow" : "Follow"}
+      <span className="relative z-10 flex items-center justify-center gap-2">
+        {loading ? (
+          <span className="loading loading-spinner loading-xs"></span>
+        ) : isFollowing ? (
+          <>
+            <span>Following</span>
+            <span className="text-[10px] opacity-50">✓</span>
+          </>
+        ) : (
+          <>
+            <span>Follow</span>
+            <span className="text-lg leading-none mb-0.5">+</span>
+          </>
+        )}
+      </span>
     </button>
   );
 };

@@ -27,7 +27,7 @@ const scaffoldConfig = {
   // The key is the chain ID, and the value is the HTTP RPC URL
   rpcOverrides: {
     // Use environment variable or fallback to public RPC
-    [chains.sepolia.id]: process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || "https://ethereum-sepolia-rpc.publicnode.com",
+    [chains.sepolia.id]: process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || "https://rpc.ankr.com/eth_sepolia",
     // Example:
     // [chains.mainnet.id]: "https://mainnet.rpc.buidlguidl.com",
   },
