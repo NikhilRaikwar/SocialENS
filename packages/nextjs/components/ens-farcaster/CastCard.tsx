@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { parseEther } from "viem";
-import { useEnsAddress, useEnsText, useSendTransaction } from "wagmi";
+import { parseUnits } from "viem";
+import { useEnsAddress, useEnsText, useWriteContract } from "wagmi";
 import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 import { notification } from "~~/utils/scaffold-eth";
 import { FollowButton } from "./FollowButton";
@@ -24,7 +24,7 @@ export const CastCard = ({ cast }: CastProps) => {
     name: authorName.includes(".") ? authorName : "",
     chainId: 11155111,
   });
-  const { sendTransactionAsync } = useSendTransaction();
+
   const writeTx = useTransactor();
 
   const targetAddress = (cast as any).authorAddress || authorAddress;
@@ -36,7 +36,11 @@ export const CastCard = ({ cast }: CastProps) => {
     chainId: 11155111,
   });
 
-  const tipValue = preferredTip || "0.001";
+  const tipValue = preferredTip || "0.1"; // Default to 0.1 USDC
+
+  // USDC on Sepolia
+  const USDC_ADDRESS = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
+  const { writeContractAsync } = useWriteContract();
 
   const handleTip = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -47,9 +51,24 @@ export const CastCard = ({ cast }: CastProps) => {
 
     try {
       await writeTx(() =>
-        sendTransactionAsync({
-          to: targetAddress,
-          value: parseEther(tipValue),
+        writeContractAsync({
+          address: USDC_ADDRESS,
+          abi: [
+            {
+              constant: false,
+              inputs: [
+                { name: "_to", type: "address" },
+                { name: "_value", type: "uint256" },
+              ],
+              name: "transfer",
+              outputs: [{ name: "", type: "bool" }],
+              payable: false,
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+          ],
+          functionName: "transfer",
+          args: [targetAddress, parseUnits(tipValue, 6)], // USDC has 6 decimals
         }),
       );
       notification.success(`Tip sent!`);
@@ -61,10 +80,10 @@ export const CastCard = ({ cast }: CastProps) => {
   return (
     <div className="glass-panel p-6 rounded-[1.5rem] transition-all duration-300 group relative overflow-hidden border border-white/5 hover:border-primary/30">
       <div className="flex gap-4 relative z-10">
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 pt-1">
           <Link href={`/${authorName.replace(".eth", "")}`} onClick={e => e.stopPropagation()}>
             <div className="avatar">
-              <div className="w-14 h-14 rounded-full ring-2 ring-white/10 ring-offset-2 ring-offset-base-100 overflow-hidden hover:scale-110 transition-transform shadow-lg">
+              <div className="w-12 h-12 rounded-full ring-2 ring-white/10 ring-offset-2 ring-offset-base-100 overflow-hidden hover:scale-110 transition-transform shadow-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://avatar.vercel.sh/${authorName || "unknown"}`}
@@ -94,19 +113,23 @@ export const CastCard = ({ cast }: CastProps) => {
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <FollowButton targetName={authorName} size="xs" />
               <button
                 onClick={handleTip}
-                className="btn btn-secondary btn-xs rounded-full opacity-0 group-hover:opacity-100 transition-all font-bold shadow-lg scale-90 group-hover:scale-100"
-                title={`Tip ${tipValue} ETH`}
+                className="relative overflow-hidden transition-all duration-300 rounded-full font-bold tracking-wide px-3 py-1 text-[10px] h-6 min-w-[70px] bg-secondary text-secondary-content shadow-[0_0_15px_rgba(var(--s),0.4)] hover:shadow-[0_0_25px_rgba(var(--s),0.6)] hover:scale-105 active:scale-95 border border-transparent opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5"
+                title={`Tip ${tipValue} USDC`}
               >
-                💸 Tip
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024" alt="USDC" className="w-3.5 h-3.5" />
+                <span className="text-[10px]">Tip</span>
               </button>
             </div>
           </div>
 
-          <p className="text-xl font-light leading-relaxed opacity-90 break-words whitespace-pre-wrap">{cast.text}</p>
+          <div className="pl-1">
+            <p className="text-lg leading-relaxed opacity-90 break-words whitespace-pre-wrap font-sans text-base-content/90">{cast.text}</p>
+          </div>
         </div>
       </div>
 

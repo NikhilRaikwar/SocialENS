@@ -112,9 +112,23 @@ export default function ProfilePage() {
                         <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
                         Sepolia Network
                       </div>
-                      <h1 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight text-primary">
-                        {ensName || "Anonymous"}
-                      </h1>
+                      <div className="flex items-center gap-4 mb-2">
+                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-primary truncate max-w-lg">
+                          {ensName || "Anonymous"}
+                        </h1>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(address || "");
+                            notification.success("Address copied");
+                          }}
+                          className="btn btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-all opacity-50 hover:opacity-100"
+                          title="Copy Address"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5" />
+                          </svg>
+                        </button>
+                      </div>
                       <p className="text-lg opacity-60 font-light max-w-xl mx-auto md:mx-0 leading-relaxed">
                         Manage your decentralized identity. Your bio, tipping preferences, and data are stored directly
                         on-chain.
@@ -125,65 +139,86 @@ export default function ProfilePage() {
               </div>
 
               {/* Settings Form */}
-              <div className="glass-panel p-8 md:p-10 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none">
-                  <span className="text-9xl">⚙️</span>
-                </div>
+              <div className="premium-glass p-10 rounded-[3rem] border border-white/10 shadow-3xl relative overflow-hidden">
 
-                <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                <h2 className="text-3xl font-black mb-10 flex items-center gap-4">
+                  <span className="text-3xl">📝</span>
                   Edit Profile
-                  <div className="h-px flex-1 bg-white/10 ml-4"></div>
+                  <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent ml-4"></div>
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                  <div className="form-control gap-2">
-                    <label className="label-text font-bold uppercase tracking-widest text-xs opacity-50 ml-1">
-                      Display Name
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                  <div className="flex flex-col gap-3">
+                    <label className="text-[10px] uppercase tracking-[0.2em] font-black opacity-40 px-2">
+                      Permanent Display Name
                     </label>
-                    <input
-                      type="text"
-                      value={ensName || ""}
-                      disabled
-                      className="input input-lg bg-white/5 border border-white/5 rounded-2xl text-lg font-bold opacity-70 cursor-not-allowed"
-                    />
-                    <span className="text-[10px] opacity-30 ml-2">Managed by ENS Protocol</span>
+                    <div className="relative group">
+                      <input
+                        type="text"
+                        value={ensName || ""}
+                        disabled
+                        className="w-full bg-white/5 border border-white/5 rounded-[1.5rem] px-6 py-4 text-xl font-black opacity-50 cursor-not-allowed outline-none"
+                      />
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                        <span className="text-[10px] font-mono opacity-30">ENS RECORD</span>
+                        <span className="text-xl">🛡️</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="form-control gap-2">
-                    <label className="label-text font-bold uppercase tracking-widest text-xs text-success ml-1">
-                      Tip Amount (ETH)
+                  <div className="flex flex-col gap-3">
+                    <label className="text-[10px] uppercase tracking-[0.2em] font-black text-secondary px-2">
+                      Preferred Tip Amount (USDC)
                     </label>
-                    <input
-                      type="text"
-                      value={tipAmount}
-                      onChange={e => setTipAmount(e.target.value)}
-                      className="input input-lg bg-base-100 border border-white/10 rounded-2xl text-lg font-mono focus:border-success/50 transition-all"
-                      placeholder="0.001"
-                    />
-                    <span className="text-[10px] opacity-30 ml-2">Default verification cost for tips</span>
+                    <div className="relative group">
+                      <input
+                        type="text"
+                        value={tipAmount}
+                        onChange={e => setTipAmount(e.target.value)}
+                        className="w-full bg-base-100/50 border border-white/10 rounded-[1.5rem] px-6 py-4 text-xl font-mono focus:border-secondary/50 focus:ring-4 focus:ring-secondary/10 transition-all outline-none"
+                        placeholder="0.001"
+                      />
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024" alt="USDC" className="w-6 h-6 opacity-80" />
+                      </div>
+                    </div>
+                    <p className="text-[10px] opacity-30 px-2 leading-relaxed italic">
+                      This is the default value others will see when clicking 'Tip' on your posts.
+                    </p>
                   </div>
                 </div>
 
-                <div className="form-control gap-2 mb-10">
-                  <label className="label-text font-bold uppercase tracking-widest text-xs text-primary ml-1">
-                    Bio
+                <div className="flex flex-col gap-3 mb-12">
+                  <label className="text-[10px] uppercase tracking-[0.2em] font-black text-primary px-2">
+                    Personal Bio / On-Chain Story
                   </label>
                   <textarea
                     value={bio}
                     onChange={e => setBio(e.target.value)}
-                    className="textarea textarea-lg bg-base-100 border border-white/10 rounded-2xl text-lg min-h-[160px] focus:border-primary/50 transition-all resize-none leading-relaxed"
-                    placeholder="Tell your story..."
+                    className="w-full bg-base-100/50 border border-white/10 rounded-[2rem] p-8 text-xl font-light min-h-[220px] focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all outline-none resize-none leading-relaxed"
+                    placeholder="Tell your story to the eternal ledger..."
                   />
+                  <div className="flex justify-between items-center px-2 opacity-30 text-[9px] uppercase tracking-widest font-mono">
+                    <span>Public Record</span>
+                    <span>Max 256 Chars</span>
+                  </div>
                 </div>
 
-                <div className="flex justify-end pt-6 border-t border-white/5">
+                <div className="flex justify-end pt-8 border-t border-white/5">
                   <button
                     onClick={handleSave}
                     disabled={loading || !ensName}
-                    className="btn btn-primary btn-lg rounded-full px-10 hover:scale-105 transition-all font-bold text-white relative overflow-hidden group"
+                    className="btn btn-primary border-none rounded-full h-16 px-12 hover:scale-105 active:scale-95 transition-all font-black text-lg shadow-[0_0_25px_rgba(var(--p),0.4)] flex items-center gap-4 text-white"
                   >
-                    {loading ? <span className="loading loading-spinner"></span> : "Save Changes"}
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    {loading ? (
+                      <span className="loading loading-spinner"></span>
+                    ) : (
+                      <>
+                        <span>Save to ENS</span>
+                        <span className="text-2xl">⚡</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

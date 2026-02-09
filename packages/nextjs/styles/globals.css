@@ -13,6 +13,7 @@
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 
   @keyframes float {
+
     0%,
     100% {
       transform: translateY(0);
@@ -110,13 +111,27 @@
 }
 
 .glass-panel {
-  @apply bg-base-100/70 backdrop-blur-xl border border-white/10 shadow-glass;
+  @apply bg-base-100/40 backdrop-blur-2xl border border-white/10 shadow-glass;
+}
+
+.premium-glass {
+  @apply bg-white/5 backdrop-blur-3xl border border-white/20;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
 }
 
 .text-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
 }
 
+.mesh-gradient {
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+}
+
 .card-hover {
-  @apply transition-all duration-300 hover:scale-[1.01] hover:border-primary/50;
+  @apply transition-all duration-300 hover:scale-[1.01] hover:border-primary/50 hover:shadow-primary/20;
 }

@@ -23,7 +23,7 @@ export const SuggestedUsers = () => {
                     event: parseAbiItem(
                         "event TextChanged(bytes32 indexed node, string indexed indexedKey, string key, string value)",
                     ),
-                    fromBlock: currentBlock - 5000n,
+                    fromBlock: currentBlock - 20000n,
                 });
 
                 // This is a bit of a trick: we want to find names, but logs only show nodes (hashes).
@@ -40,7 +40,7 @@ export const SuggestedUsers = () => {
                     })
                     .filter(Boolean) as string[];
 
-                const uniqueNames = Array.from(new Set(foundNames)).slice(0, 5);
+                const uniqueNames = Array.from(new Set(foundNames)).slice(0, 8);
                 setUsers(uniqueNames);
             } catch (e) {
                 console.error("Discovery error:", e);
@@ -70,12 +70,15 @@ export const SuggestedUsers = () => {
             <div className="flex flex-col gap-3">
                 {users.map((name) => (
                     <div key={name} className="flex items-center justify-between gap-3 p-2 rounded-2xl hover:bg-white/5 transition-colors group">
-                        <Link href={`/${name.replace(".eth", "")}`} className="flex items-center gap-3 min-w-0">
-                            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0">
+                        <Link href={`/${name.replace(".eth", "")}`} className="flex items-center gap-3 min-w-0 flex-grow">
+                            <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-md">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={`https://avatar.vercel.sh/${name}`} alt={name} className="w-full h-full object-cover" />
+                                <img src={`https://avatar.vercel.sh/${name}`} alt={name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                             </div>
-                            <span className="text-sm font-bold truncate opacity-80 group-hover:opacity-100 transition-opacity">{name}</span>
+                            <div className="flex flex-col min-w-0">
+                                <span className="text-sm font-black truncate group-hover:text-primary transition-colors">{name}</span>
+                                <span className="text-[10px] opacity-40 uppercase tracking-tighter font-mono">On-Chain User</span>
+                            </div>
                         </Link>
                         <FollowButton targetName={name} size="xs" />
                     </div>
