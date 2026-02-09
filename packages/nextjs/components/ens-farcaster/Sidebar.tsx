@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAccount, useEnsAvatar, useEnsName, useEnsText } from "wagmi";
 import { notification } from "~~/utils/scaffold-eth";
-import { SuggestedUsers } from "./SuggestedUsers";
 import { FollowListModal } from "./FollowListModal";
 
 export const Sidebar = () => {

@@ -4,7 +4,6 @@ import type { NextPage } from "next";
 import { Compose } from "~~/components/ens-farcaster/Compose";
 import { EnsGuard } from "~~/components/ens-farcaster/EnsGuard";
 import { Feed } from "~~/components/ens-farcaster/Feed";
-import { FollowButton } from "~~/components/ens-farcaster/FollowButton";
 import { Sidebar } from "~~/components/ens-farcaster/Sidebar";
 import { SuggestedUsers } from "~~/components/ens-farcaster/SuggestedUsers";
 

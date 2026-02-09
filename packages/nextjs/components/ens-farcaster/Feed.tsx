@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CastCard } from "./CastCard";
 import { namehash, parseAbiItem } from "viem";
 import { useAccount, useEnsName, usePublicClient } from "wagmi";
