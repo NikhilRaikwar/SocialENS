@@ -35,20 +35,20 @@ export const Sidebar = () => {
       <SearchUsers />
 
       {/* Profile Card */}
-      <div className="glass-panel p-6 rounded-[2rem] border border-white/5 relative group overflow-hidden transition-all hover:border-primary/30">
+      <div className="glass-panel p-6 rounded-[2rem] border border-base-content/5 relative group overflow-hidden transition-all hover:border-primary/30">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         <div className="flex flex-col items-center text-center relative z-10">
           <div className="relative mb-4">
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/40 transition-all duration-500"></div>
-            <div className="w-24 h-24 rounded-full border-2 border-white/20 shadow-2xl relative z-10 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+            <div className="w-24 h-24 rounded-full border-2 border-base-content/20 shadow-2xl relative z-10 overflow-hidden group-hover:scale-105 transition-transform duration-300">
               <EnsAvatar name={ensName || address || "unknown"} />
             </div>
           </div>
 
           <div className="w-full">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <h2 className="font-bold text-xl truncate text-primary/90" title={ensName || "Anonymous"}>
+              <h2 className="font-bold text-xl truncate text-primary/90 max-w-[150px]" title={ensName || "Anonymous"}>
                 {ensName || "Anonymous"}
               </h2>
               <button
@@ -80,9 +80,9 @@ export const Sidebar = () => {
               <p className="text-sm opacity-70 italic line-clamp-2 px-2 mb-4 leading-relaxed font-light">{bio}</p>
             )}
 
-            <div className="grid grid-cols-2 gap-2 border-t border-white/5 pt-4">
+            <div className="grid grid-cols-2 gap-2 border-t border-base-content/5 pt-4">
               <div
-                className="text-center p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group"
+                className="text-center p-2 rounded-xl hover:bg-base-content/5 transition-colors cursor-pointer group"
                 onClick={() => setModalType("following")}
               >
                 <span className="font-black text-lg block group-hover:text-primary transition-colors">
@@ -93,7 +93,7 @@ export const Sidebar = () => {
                 </span>
               </div>
               <div
-                className="text-center p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group"
+                className="text-center p-2 rounded-xl hover:bg-base-content/5 transition-colors cursor-pointer group"
                 onClick={() => setModalType("followers")}
               >
                 <span className="font-black text-lg block group-hover:text-primary transition-colors">

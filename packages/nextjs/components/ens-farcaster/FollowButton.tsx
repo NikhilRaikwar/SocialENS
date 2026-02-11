@@ -107,15 +107,14 @@ export const FollowButton = ({ targetName: rawTargetName, size = "sm" }: { targe
   if (fetchingList) {
     return (
       <div
-        className={`animate-pulse bg-base-300/30 border border-white/10 rounded-full h-full flex items-center justify-center ${
-          size === "xs"
-            ? "px-3 py-1 min-w-[70px] h-6"
-            : size === "sm"
-              ? "px-5 py-1.5 min-w-[95px] h-8"
-              : "px-8 py-3 min-w-[145px] h-12"
-        }`}
+        className={`animate-pulse bg-base-300/30 border border-base-content/10 rounded-full h-full flex items-center justify-center ${size === "xs"
+          ? "px-3 py-1 min-w-[70px] h-6"
+          : size === "sm"
+            ? "px-5 py-1.5 min-w-[95px] h-8"
+            : "px-8 py-3 min-w-[145px] h-12"
+          }`}
       >
-        <span className="opacity-10 text-[10px]">Checking Graph...</span>
+        <span className="opacity-40 text-[10px] font-bold">Checking...</span>
       </div>
     );
   }
@@ -127,17 +126,15 @@ export const FollowButton = ({ targetName: rawTargetName, size = "sm" }: { targe
       id={`follow-btn-${targetName}`}
       className={`
         relative overflow-hidden transition-all duration-300 rounded-full font-bold tracking-wide flex items-center justify-center
-        ${
-          size === "xs"
-            ? "px-3 py-1 text-[10px] h-6 min-w-[70px]"
-            : size === "sm"
-              ? "px-5 py-1.5 text-xs h-8 min-w-[95px]"
-              : "px-8 py-3 text-sm h-12 min-w-[145px]"
+        ${size === "xs"
+          ? "px-3 py-1 text-[10px] h-6 min-w-[70px]"
+          : size === "sm"
+            ? "px-5 py-1.5 text-xs h-8 min-w-[95px]"
+            : "px-8 py-3 text-sm h-12 min-w-[145px]"
         }
-        ${
-          isFollowing
-            ? "bg-white/10 border border-white/20 text-white/80 hover:bg-white/20 hover:text-white"
-            : "bg-primary text-primary-content shadow-[0_4px_15px_rgba(var(--p),0.3)] hover:shadow-[0_8px_25px_rgba(var(--p),0.5)] hover:scale-105 active:scale-95 border border-transparent"
+        ${isFollowing
+          ? "bg-base-200 border border-base-300 text-base-content/70 hover:bg-base-300 hover:text-base-content shadow-sm"
+          : "bg-primary text-primary-content shadow-[0_4px_15px_rgba(var(--p),0.3)] hover:shadow-[0_8px_25px_rgba(var(--p),0.5)] hover:scale-105 active:scale-95 border border-transparent"
         }
         ${loading ? "opacity-50 cursor-wait" : "opacity-100 visible"}
       `}

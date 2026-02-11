@@ -103,7 +103,7 @@ export const SuggestedUsers = () => {
     );
 
   return (
-    <div className="glass-panel p-4 rounded-[2rem] border border-white/5 flex flex-col gap-6 relative overflow-hidden group">
+    <div className="glass-panel p-4 rounded-[2rem] border border-base-content/5 flex flex-col gap-6 relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50"></div>
 
       <h3 className="text-[10px] font-black uppercase tracking-widest opacity-40 px-2 flex items-center gap-3 relative z-10 mt-2">
@@ -115,17 +115,17 @@ export const SuggestedUsers = () => {
         {users.map(name => (
           <div
             key={name}
-            className="group/user relative flex items-center p-2 rounded-2xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10"
+            className="group/user relative flex items-center p-2 rounded-2xl hover:bg-base-content/5 transition-all border border-transparent hover:border-base-content/10"
           >
             <Link href={`/${name.replace(".eth", "")}`} className="flex items-center gap-3 min-w-0 pr-2">
-              <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-md transition-transform group-hover/user:scale-105">
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-base-content/10 shrink-0 shadow-md transition-transform group-hover/user:scale-105">
                 <EnsAvatar name={name} />
               </div>
               <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
                 <span className="text-xs font-black truncate group-hover/user:text-primary transition-colors">
                   {name}
                 </span>
-                <span className="text-[8px] opacity-30 uppercase tracking-tighter font-mono truncate">
+                <span className="text-[8px] opacity-40 uppercase tracking-tighter font-mono truncate">
                   Verified On-Chain
                 </span>
               </div>
@@ -138,8 +138,8 @@ export const SuggestedUsers = () => {
         ))}
       </div>
 
-      <div className="mt-2 pt-4 border-t border-white/5 text-center">
-        <p className="text-[9px] opacity-20 uppercase tracking-[0.2em] font-medium">Updated live from Sepolia</p>
+      <div className="mt-2 pt-4 border-t border-base-content/5 text-center">
+        <p className="text-[9px] opacity-30 uppercase tracking-[0.2em] font-medium">Updated live from Sepolia</p>
       </div>
     </div>
   );

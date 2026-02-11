@@ -5,7 +5,7 @@ import { FollowButton } from "./FollowButton";
 import { EnsAvatar } from "./EnsAvatar";
 import { formatDistanceToNow } from "date-fns";
 import { parseUnits } from "viem";
-import { useEnsAddress, useEnsText, useWriteContract } from "wagmi";
+import { useAccount, useEnsAddress, useEnsName, useEnsText, useWriteContract } from "wagmi";
 import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -25,6 +25,9 @@ export const CastCard = ({ cast }: CastProps) => {
     name: authorName.includes(".") ? authorName : "",
     chainId: 11155111,
   });
+
+  const { address: connectedAddress } = useAccount();
+  const { data: connectedEnsName } = useEnsName({ address: connectedAddress, chainId: 11155111 });
 
   const writeTx = useTransactor();
 
@@ -79,12 +82,12 @@ export const CastCard = ({ cast }: CastProps) => {
   };
 
   return (
-    <div className="glass-panel p-6 rounded-[1.5rem] transition-all duration-300 group relative overflow-hidden border border-white/5 hover:border-primary/30">
+    <div className="glass-panel p-6 rounded-[1.5rem] transition-all duration-300 group relative overflow-hidden border border-base-content/5 hover:border-primary/30">
       <div className="flex gap-4 relative z-10">
         <div className="flex-shrink-0 pt-1">
           <Link href={`/${authorName.replace(".eth", "")}`} onClick={e => e.stopPropagation()}>
             <div className="avatar">
-              <div className="w-12 h-12 rounded-full ring-2 ring-white/10 ring-offset-2 ring-offset-base-100 overflow-hidden hover:scale-110 transition-transform shadow-lg">
+              <div className="w-12 h-12 rounded-full ring-2 ring-base-content/10 ring-offset-2 ring-offset-base-100 overflow-hidden hover:scale-110 transition-transform shadow-lg">
                 <EnsAvatar name={authorName} />
               </div>
             </div>
@@ -108,19 +111,22 @@ export const CastCard = ({ cast }: CastProps) => {
 
             <div className="flex items-center gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
               <FollowButton targetName={authorName} size="xs" />
-              <button
-                onClick={handleTip}
-                className="relative overflow-hidden rounded-full font-bold tracking-wide px-3 py-1 text-[10px] h-6 min-w-[65px] bg-secondary text-secondary-content shadow-lg hover:scale-105 active:scale-95 border border-white/10 flex items-center justify-center gap-1.5"
-                title={`Tip ${tipValue} USDC`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024"
-                  alt="USDC"
-                  className="w-3.5 h-3.5"
-                />
-                <span className="text-[10px]">Tip</span>
-              </button>
+              {connectedAddress?.toLowerCase() !== targetAddress?.toLowerCase() &&
+                connectedEnsName?.toLowerCase() !== authorName?.toLowerCase() && (
+                  <button
+                    onClick={handleTip}
+                    className="relative overflow-hidden rounded-full font-bold tracking-wide px-3 py-1 text-[10px] h-6 min-w-[65px] bg-secondary text-secondary-content shadow-lg hover:scale-105 active:scale-95 border border-base-content/10 flex items-center justify-center gap-1.5"
+                    title={`Tip ${tipValue} USDC`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024"
+                      alt="USDC"
+                      className="w-3.5 h-3.5"
+                    />
+                    <span className="text-[10px]">Tip</span>
+                  </button>
+                )}
             </div>
           </div>
 
