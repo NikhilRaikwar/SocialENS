@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FollowListModal } from "./FollowListModal";
+import { EnsAvatar } from "./EnsAvatar";
 import { SearchUsers } from "./SearchUsers";
 import { useAccount, useEnsAvatar, useEnsName, useEnsText } from "wagmi";
 import { notification } from "~~/utils/scaffold-eth";
@@ -40,12 +41,9 @@ export const Sidebar = () => {
         <div className="flex flex-col items-center text-center relative z-10">
           <div className="relative mb-4">
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/40 transition-all duration-500"></div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={avatarUrl}
-              alt="avatar"
-              className="w-24 h-24 rounded-full border-2 border-white/20 shadow-2xl relative z-10 object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+            <div className="w-24 h-24 rounded-full border-2 border-white/20 shadow-2xl relative z-10 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+              <EnsAvatar name={ensName || address || "unknown"} />
+            </div>
           </div>
 
           <div className="w-full">

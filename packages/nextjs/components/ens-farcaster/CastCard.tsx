@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FollowButton } from "./FollowButton";
+import { EnsAvatar } from "./EnsAvatar";
 import { formatDistanceToNow } from "date-fns";
 import { parseUnits } from "viem";
 import { useEnsAddress, useEnsText, useWriteContract } from "wagmi";
@@ -84,15 +85,7 @@ export const CastCard = ({ cast }: CastProps) => {
           <Link href={`/${authorName.replace(".eth", "")}`} onClick={e => e.stopPropagation()}>
             <div className="avatar">
               <div className="w-12 h-12 rounded-full ring-2 ring-white/10 ring-offset-2 ring-offset-base-100 overflow-hidden hover:scale-110 transition-transform shadow-lg">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://avatar.vercel.sh/${authorName || "unknown"}`}
-                  alt="avatar"
-                  onError={e => {
-                    (e.target as HTMLImageElement).src = `https://avatar.vercel.sh/${authorName || "unknown"}`;
-                  }}
-                  className="object-cover w-full h-full"
-                />
+                <EnsAvatar name={authorName} />
               </div>
             </div>
           </Link>

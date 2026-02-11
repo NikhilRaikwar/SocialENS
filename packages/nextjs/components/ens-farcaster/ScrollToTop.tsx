@@ -31,10 +31,10 @@ export const ScrollToTop = () => {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-8 right-8 z-[90] p-4 rounded-2xl bg-primary text-primary-content shadow-[0_0_20px_rgba(var(--p),0.5)] hover:shadow-[0_0_30px_rgba(var(--p),0.7)] hover:-translate-y-1 transition-all duration-300 animate-fade-in group"
+      className="fixed bottom-24 right-6 z-[90] p-3 rounded-full bg-primary/80 backdrop-blur-md text-primary-content shadow-lg hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 animate-fade-in group border border-white/20 active:scale-95"
       aria-label="Scroll to top"
     >
-      <ChevronUpIcon className="w-6 h-6 group-hover:scale-125 transition-transform" />
+      <ChevronUpIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
     </button>
   );
 };

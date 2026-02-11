@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { EnsAvatar } from "./EnsAvatar";
 
 interface FollowListModalProps {
   isOpen: boolean;
@@ -69,13 +70,8 @@ export const FollowListModal = ({ isOpen, onClose, title, names }: FollowListMod
                   onClick={onClose}
                 >
                   <div className="avatar">
-                    <div className="w-10 h-10 rounded-full ring-2 ring-white/5 group-hover:ring-primary/40 transition-all">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`https://avatar.vercel.sh/${name}`}
-                        alt={name}
-                        className="w-full h-full object-cover rounded-full"
-                      />
+                    <div className="w-10 h-10 rounded-full ring-2 ring-white/5 group-hover:ring-primary/40 transition-all overflow-hidden">
+                      <EnsAvatar name={name} />
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">

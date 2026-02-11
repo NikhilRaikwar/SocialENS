@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FollowButton } from "./FollowButton";
+import { EnsAvatar } from "./EnsAvatar";
 import { namehash, parseAbiItem } from "viem";
 import { usePublicClient } from "wagmi";
 import { PUBLIC_RESOLVER_ABI } from "~~/utils/ens";
@@ -102,33 +103,35 @@ export const SuggestedUsers = () => {
     );
 
   return (
-    <div className="glass-panel p-6 rounded-[2rem] border border-white/5 flex flex-col gap-6 relative overflow-hidden group">
+    <div className="glass-panel p-4 rounded-[2rem] border border-white/5 flex flex-col gap-6 relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50"></div>
 
-      <h3 className="text-[10px] font-black uppercase tracking-widest opacity-40 px-2 flex items-center gap-3 relative z-10">
+      <h3 className="text-[10px] font-black uppercase tracking-widest opacity-40 px-2 flex items-center gap-3 relative z-10 mt-2">
         <span className="w-2 h-2 rounded-full bg-success animate-pulse"></span>
         New Joiners & Active
       </h3>
 
-      <div className="flex flex-col gap-5 relative z-10">
+      <div className="flex flex-col gap-4 relative z-10">
         {users.map(name => (
           <div
             key={name}
-            className="flex items-center justify-between gap-4 p-2 rounded-2xl hover:bg-white/5 transition-all group/user"
+            className="group/user relative flex items-center p-2 rounded-2xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10"
           >
-            <Link href={`/${name.replace(".eth", "")}`} className="flex items-center gap-3 min-w-0 flex-grow">
-              <div className="w-11 h-11 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-lg group-hover/user:scale-110 transition-transform duration-300 ring-2 ring-transparent group-hover/user:ring-primary/20">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`https://avatar.vercel.sh/${name}`} alt={name} className="w-full h-full object-cover" />
+            <Link href={`/${name.replace(".eth", "")}`} className="flex items-center gap-3 min-w-0 pr-2">
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 shrink-0 shadow-md transition-transform group-hover/user:scale-105">
+                <EnsAvatar name={name} />
               </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-black truncate group-hover/user:text-primary transition-colors">
+              <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
+                <span className="text-xs font-black truncate group-hover/user:text-primary transition-colors">
                   {name}
                 </span>
-                <span className="text-[9px] opacity-30 uppercase tracking-widest font-mono">Verified On-Chain</span>
+                <span className="text-[8px] opacity-30 uppercase tracking-tighter font-mono truncate">
+                  Verified On-Chain
+                </span>
               </div>
             </Link>
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+
+            <div className="ml-auto shrink-0 opacity-0 group-hover:opacity-100 transition-all transform translate-x-1 group-hover:translate-x-0">
               <FollowButton targetName={name} size="xs" />
             </div>
           </div>
