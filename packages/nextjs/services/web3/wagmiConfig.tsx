@@ -17,44 +17,48 @@ export const wagmiConfig = createConfig({
   connectors: wagmiConnectors(),
   ssr: true,
   client: ({ chain }) => {
-    const mainnetFallbackWithDefaultRPC = [
-      http("https://eth.drpc.org"),
-      http("https://cloudflare-eth.com"),
-      http("https://mainnet.rpc.buidlguidl.com"),
-    ];
+    const rpcOverrideUrl = (scaffoldConfig.rpcOverrides as ScaffoldConfig["rpcOverrides"])?.[chain.id];
 
+    // Build an explicit list of RPCs to avoid hidden defaults with restrictive limits (like Thirdweb)
     let rpcFallbacks = [];
-    if (chain.id === 1) {
-      rpcFallbacks = [...mainnetFallbackWithDefaultRPC];
-    } else {
-      rpcFallbacks = [http()];
+
+    if (rpcOverrideUrl) {
+      rpcFallbacks.push(http(rpcOverrideUrl));
     }
 
-    // Use multiple high-quality public RPCs for redundancy on Sepolia
+    // Add high-quality public fallbacks
     if (chain.id === 11155111) {
-      rpcFallbacks = [
+      rpcFallbacks.push(
         http("https://rpc.ankr.com/eth_sepolia"),
         http("https://ethereum-sepolia-rpc.publicnode.com"),
         http("https://sepolia.drpc.org"),
-        ...rpcFallbacks,
-      ];
+        http("https://eth-sepolia.public.blastapi.io"),
+      );
+    } else if (chain.id === 1) {
+      rpcFallbacks.push(
+        http("https://eth.drpc.org"),
+        http("https://cloudflare-eth.com"),
+        http("https://mainnet.rpc.buidlguidl.com"),
+      );
     }
 
-    const rpcOverrideUrl = (scaffoldConfig.rpcOverrides as ScaffoldConfig["rpcOverrides"])?.[chain.id];
-    if (rpcOverrideUrl) {
-      rpcFallbacks = [http(rpcOverrideUrl), ...rpcFallbacks];
-    } else {
+    // If no override was used, still try to add Alchemy if a key is present
+    if (!rpcOverrideUrl) {
       const alchemyHttpUrl = getAlchemyHttpUrl(chain.id);
       if (alchemyHttpUrl) {
-        const isUsingDefaultKey = scaffoldConfig.alchemyApiKey === DEFAULT_ALCHEMY_API_KEY;
-        rpcFallbacks = isUsingDefaultKey
-          ? [...rpcFallbacks, http(alchemyHttpUrl)]
-          : [http(alchemyHttpUrl), ...rpcFallbacks];
+        // Prepend Alchemy to the public list
+        rpcFallbacks = [http(alchemyHttpUrl), ...rpcFallbacks];
       }
     }
+
+    // Finally add a generic fallback only as a last resort
+    if (rpcFallbacks.length === 0) {
+      rpcFallbacks.push(http());
+    }
+
     return createClient({
       chain,
-      transport: fallback(rpcFallbacks),
+      transport: fallback(rpcFallbacks, { rank: false }), // Try them in order
       ...(chain.id !== (hardhat as Chain).id ? { pollingInterval: scaffoldConfig.pollingInterval } : {}),
     });
   },

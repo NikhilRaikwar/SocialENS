@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { FollowButton } from "./FollowButton";
 import { formatDistanceToNow } from "date-fns";
 import { parseUnits } from "viem";
 import { useEnsAddress, useEnsText, useWriteContract } from "wagmi";
 import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 import { notification } from "~~/utils/scaffold-eth";
-import { FollowButton } from "./FollowButton";
 
 interface CastProps {
   cast: {
@@ -99,36 +99,42 @@ export const CastCard = ({ cast }: CastProps) => {
         </div>
 
         <div className="flex-grow min-w-0 pt-1">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 min-w-0">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 min-w-0">
               <Link
                 href={`/${authorName.replace(".eth", "")}`}
-                className="font-bold text-lg hover:text-primary transition-colors truncate tracking-tight"
+                className="font-black text-lg hover:text-primary transition-colors truncate tracking-tight"
                 onClick={e => e.stopPropagation()}
               >
                 {authorName}
               </Link>
-              <span className="opacity-40 text-xs font-mono">
+              <span className="opacity-30 text-[10px] font-mono whitespace-nowrap">
                 {formatDistanceToNow(new Date(cast.timestamp), { addSuffix: true })}
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
               <FollowButton targetName={authorName} size="xs" />
               <button
                 onClick={handleTip}
-                className="relative overflow-hidden transition-all duration-300 rounded-full font-bold tracking-wide px-3 py-1 text-[10px] h-6 min-w-[70px] bg-secondary text-secondary-content shadow-[0_0_15px_rgba(var(--s),0.4)] hover:shadow-[0_0_25px_rgba(var(--s),0.6)] hover:scale-105 active:scale-95 border border-transparent opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5"
+                className="relative overflow-hidden rounded-full font-bold tracking-wide px-3 py-1 text-[10px] h-6 min-w-[65px] bg-secondary text-secondary-content shadow-lg hover:scale-105 active:scale-95 border border-white/10 flex items-center justify-center gap-1.5"
                 title={`Tip ${tipValue} USDC`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024" alt="USDC" className="w-3.5 h-3.5" />
+                <img
+                  src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024"
+                  alt="USDC"
+                  className="w-3.5 h-3.5"
+                />
                 <span className="text-[10px]">Tip</span>
               </button>
             </div>
           </div>
 
           <div className="pl-1">
-            <p className="text-lg leading-relaxed opacity-90 break-words whitespace-pre-wrap font-sans text-base-content/90">{cast.text}</p>
+            <p className="text-lg leading-relaxed opacity-90 break-words whitespace-pre-wrap font-sans text-base-content/90">
+              {cast.text}
+            </p>
           </div>
         </div>
       </div>

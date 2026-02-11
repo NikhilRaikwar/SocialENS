@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CastCard } from "./CastCard";
 import { namehash, parseAbiItem } from "viem";
 import { useAccount, useEnsName, usePublicClient } from "wagmi";
 import { PUBLIC_RESOLVER_ABI } from "~~/utils/ens";
 
-// ENS Public Resolver on Ethereum Sepolia (official deployment)
+// ENS Public Resolver on Ethereum Sepolia
 const SEPOLIA_RESOLVER = "0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5";
 
 export const Feed = () => {
@@ -17,7 +17,10 @@ export const Feed = () => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [lastBlockScanned, setLastBlockScanned] = useState<bigint>(0n);
+
+  // Use a ref for last block to avoid infinite loop triggers while still tracking state
+  const lastBlockScannedRef = useRef<bigint>(0n);
+  const [displayLastBlock, setDisplayLastBlock] = useState<bigint>(0n);
 
   const fetchFeed = useCallback(
     async (isRefresh = false, loadMore = false) => {
@@ -27,124 +30,113 @@ export const Feed = () => {
       else if (loadMore) setLoadingMore(true);
       else setLoading(true);
 
-      console.log("🚀 Fetching casts from ENS text records...", { isRefresh, loadMore });
-
       try {
         const currentBlock = await publicClient.getBlockNumber();
-        const BLOCK_RANGE = 2500n; // Increased to 2500n to widen discovery window while staying within reasonable limits
+        const TOTAL_SCAN_RANGE = 20000n; // Reduced range for faster initial feedback
+        const CHUNK_SIZE = 1000n; // Safest chunk size to avoid 400 errors across all nodes
 
-        let fromBlock: bigint;
         let toBlock: bigint;
-
-        if (loadMore && lastBlockScanned > 0n) {
-          // Scan backwards from where we left off
-          toBlock = lastBlockScanned - 1n;
-          fromBlock = toBlock - BLOCK_RANGE;
+        if (loadMore && lastBlockScannedRef.current > 0n) {
+          toBlock = lastBlockScannedRef.current - 1n;
         } else {
-          // Fresh loading or Refresh: scan latest
           toBlock = currentBlock;
-          fromBlock = currentBlock - BLOCK_RANGE;
         }
 
-        if (fromBlock < 0n) fromBlock = 0n;
+        const finalFromBlock = toBlock - TOTAL_SCAN_RANGE > 0n ? toBlock - TOTAL_SCAN_RANGE : 0n;
+        const uniqueNodes = new Set<string>();
 
-        // Fetch logs for discovery
-        const logs = await publicClient.getLogs({
-          address: SEPOLIA_RESOLVER,
-          event: parseAbiItem(
-            "event TextChanged(bytes32 indexed node, string indexed indexedKey, string key, string value)",
-          ),
-          fromBlock,
-          toBlock,
-        });
+        // 1. Discovery phase with standard TextChanged signature
+        let currentTo = toBlock;
+        while (currentTo > finalFromBlock) {
+          const currentFrom = currentTo - CHUNK_SIZE > finalFromBlock ? currentTo - CHUNK_SIZE : finalFromBlock;
 
-        const castNodes = logs
-          .filter(log => log.args.key === "social.casts")
-          .map(log => log.args.node)
-          .filter(Boolean) as string[];
+          try {
+            const logs = await publicClient.getLogs({
+              address: SEPOLIA_RESOLVER,
+              event: parseAbiItem(
+                "event TextChanged(bytes32 indexed node, string indexed indexedKey, string key, string value)",
+              ),
+              fromBlock: currentFrom,
+              toBlock: currentTo,
+            });
 
-        const uniqueNodes = Array.from(new Set(castNodes));
-        const newCasts: any[] = [];
+            logs.forEach(log => {
+              if (log.args.key === "social.casts" && log.args.node) {
+                uniqueNodes.add(log.args.node);
+              }
+            });
+          } catch (e) {
+            // Silently skip failed chunks to keep feed alive
+          }
+          currentTo = currentFrom - 1n;
+        }
 
-        // Also check current user if it's the first load
+        const nodesToFetch = Array.from(uniqueNodes);
+
+        // Always include current user's own casts
         if (!loadMore && ensName) {
           try {
             const node = namehash(ensName);
-            if (!uniqueNodes.includes(node)) uniqueNodes.push(node);
-          } catch { }
+            if (!uniqueNodes.has(node)) nodesToFetch.push(node);
+          } catch {}
         }
 
-        // Fetch actual text records
-        for (const node of uniqueNodes) {
-          try {
-            const castsJson = (await publicClient.readContract({
-              address: SEPOLIA_RESOLVER,
-              abi: PUBLIC_RESOLVER_ABI,
-              functionName: "text",
-              args: [node, "social.casts"],
-            })) as string;
-
-            if (castsJson) {
-              const parsed = JSON.parse(castsJson);
-              // Ensure parsed casts have an ID and author
-              const validCasts = parsed.map((c: any) => ({
-                ...c,
-                // If the cast object itself doesn't have an author field, we can try to infer it,
-                // but usually the Compose logic puts it there. 
-                // We should filter out malformed ones if needed.
-              }));
-              newCasts.push(...validCasts);
-            }
-          } catch {
-            // Skip failed reads
-          }
+        const settledCasts: any[] = [];
+        const batchSize = 5;
+        for (let i = 0; i < nodesToFetch.length; i += batchSize) {
+          const batch = nodesToFetch.slice(i, i + batchSize);
+          const results = await Promise.all(
+            batch.map(async node => {
+              try {
+                const json = (await publicClient.readContract({
+                  address: SEPOLIA_RESOLVER,
+                  abi: PUBLIC_RESOLVER_ABI,
+                  functionName: "text",
+                  args: [node, "social.casts"],
+                })) as string;
+                return json ? JSON.parse(json) : [];
+              } catch {
+                return [];
+              }
+            }),
+          );
+          results.forEach(casts => settledCasts.push(...casts));
         }
 
         setFeed(prev => {
-          const combined = loadMore ? [...prev, ...newCasts] : newCasts;
-          // Deduplicate by ID
-          const unique = combined.filter((cast, index, self) =>
-            index === self.findIndex(c => c.id === cast.id)
-          );
-          // Sort by timestamp descending
+          const combined = loadMore ? [...prev, ...settledCasts] : settledCasts;
+          const unique = combined.filter((cast, idx, self) => idx === self.findIndex(c => c.id === cast.id));
           return unique.sort((a, b) => b.timestamp - a.timestamp);
         });
 
-        setLastBlockScanned(fromBlock);
-
+        lastBlockScannedRef.current = finalFromBlock;
+        setDisplayLastBlock(finalFromBlock);
       } catch (e) {
-        console.error("Error fetching feed:", e);
+        console.error("Feed Fetch Error:", e);
       } finally {
         setLoading(false);
         setRefreshing(false);
         setLoadingMore(false);
       }
     },
-    [publicClient, ensName, lastBlockScanned],
+    [publicClient, ensName],
   );
 
   useEffect(() => {
     fetchFeed();
-    const handleNewCast = () => {
-      setTimeout(() => fetchFeed(true), 2000);
-    };
+    const handleNewCast = () => setTimeout(() => fetchFeed(true), 2500);
     window.addEventListener("cast-success", handleNewCast);
     return () => window.removeEventListener("cast-success", handleNewCast);
   }, [fetchFeed]);
 
-
-
-  if (loading) {
+  if (loading)
     return (
       <div className="flex flex-col gap-4">
         {[1, 2, 3].map(i => (
-          <div key={i} className="glass-panel h-40 rounded-[2rem] animate-pulse relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 animate-shimmer"></div>
-          </div>
+          <div key={i} className="glass-panel h-48 rounded-[2rem] animate-pulse"></div>
         ))}
       </div>
     );
-  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -165,12 +157,11 @@ export const Feed = () => {
       <div className="flex flex-col gap-4">
         {feed.length === 0 ? (
           <div className="glass-panel p-16 text-center rounded-[2.5rem] border-dashed border-2 border-base-content/10">
-            <div className="text-7xl mb-6 opacity-80 mix-blend-luminosity">📭</div>
+            <div className="text-7xl mb-6 opacity-80">📭</div>
             <h3 className="text-2xl font-black mb-2">Silence on the chain...</h3>
             <p className="opacity-50 max-w-xs mx-auto mb-8">
               Be the first to cast your thoughts to the eternal ledger.
             </p>
-            {!ensName && <div className="badge badge-warning p-4 gap-2">⚠️ Connect ENS Wallet to Post</div>}
           </div>
         ) : (
           feed.map((cast: any) => <CastCard key={cast.id} cast={cast} />)
@@ -179,14 +170,14 @@ export const Feed = () => {
 
       <div className="text-center py-8">
         <button
-          className="btn btn-outline btn-wide rounded-full hover:bg-white/5 transition-all active:scale-95"
+          className="btn btn-outline btn-wide rounded-full hover:bg-white/5 transition-all"
           onClick={() => fetchFeed(false, true)}
           disabled={loadingMore || loading}
         >
-          {loadingMore ? "Scanning Chain History..." : "Load Older Casts"}
+          {loadingMore ? "Scanning History..." : "Load Older Casts"}
         </button>
-        <div className="mt-4 opacity-30 text-xs font-mono tracking-widest uppercase">
-          Scanning 2,500 Blocks/Click • Last: {lastBlockScanned.toString()}
+        <div className="mt-4 opacity-30 text-[10px] font-mono tracking-widest uppercase">
+          Discovery Depth: 20,000 blocks • Last: {displayLastBlock.toString()}
         </div>
       </div>
     </div>

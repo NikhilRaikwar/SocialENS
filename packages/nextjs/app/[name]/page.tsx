@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { namehash } from "viem";
-import { useAccount, useEnsAddress, useEnsAvatar, useEnsText, usePublicClient, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
-import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
-import { notification } from "~~/utils/scaffold-eth";
+import { useAccount, useEnsAddress, useEnsAvatar, useEnsText, usePublicClient, useWriteContract } from "wagmi";
 import { CastCard } from "~~/components/ens-farcaster/CastCard";
 import { EnsGuard } from "~~/components/ens-farcaster/EnsGuard";
 import { FollowButton } from "~~/components/ens-farcaster/FollowButton";
-import { Sidebar } from "~~/components/ens-farcaster/Sidebar";
-import { PUBLIC_RESOLVER_ABI } from "~~/utils/ens";
 import { FollowListModal } from "~~/components/ens-farcaster/FollowListModal";
+import { Sidebar } from "~~/components/ens-farcaster/Sidebar";
+import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
+import { PUBLIC_RESOLVER_ABI } from "~~/utils/ens";
+import { notification } from "~~/utils/scaffold-eth";
 
 // ENS Public Resolver on Ethereum Sepolia (official deployment)
 const SEPOLIA_RESOLVER = "0xE99638b40E4Fff0129D56f03b55b6bbC4BBE49b5";
@@ -54,10 +54,16 @@ export default function UserProfilePage() {
     chainId: 11155111,
   });
 
-
-
-  const { data: followingJson } = useEnsText({ name: fullName || undefined, key: "social.following", chainId: 11155111 });
-  const { data: followersJson } = useEnsText({ name: fullName || undefined, key: "social.followers", chainId: 11155111 });
+  const { data: followingJson } = useEnsText({
+    name: fullName || undefined,
+    key: "social.following",
+    chainId: 11155111,
+  });
+  const { data: followersJson } = useEnsText({
+    name: fullName || undefined,
+    key: "social.followers",
+    chainId: 11155111,
+  });
 
   const followingCount = followingJson ? JSON.parse(followingJson).length : 0;
   const followersCount = followersJson ? JSON.parse(followersJson).length : 0;
@@ -139,7 +145,6 @@ export default function UserProfilePage() {
           {/* Social Profile Content */}
           <div className="col-span-1 md:col-span-8 lg:col-span-9">
             <div className="flex flex-col gap-10">
-
               {/* Profile Header Card */}
               <div className="glass-panel rounded-[3rem] p-1 border border-white/10 mb-8 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10 opacity-50"></div>
@@ -184,15 +189,26 @@ export default function UserProfilePage() {
                               className="btn btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-all opacity-50 hover:opacity-100 shrink-0"
                               title="Copy Address"
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5" />
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5"
+                                />
                               </svg>
                             </button>
                           </div>
 
                           {/* Direct Action Hub */}
-                          <div className="flex items-center gap-3 shrink-0">
-                            <FollowButton targetName={fullName} size="md" />
+                          <div className="flex items-center gap-4 shrink-0">
+                            <FollowButton targetName={fullName} size="lg" />
                             {(!connectedAddress || !authorAddress || connectedAddress !== authorAddress) && (
                               <button
                                 onClick={handleTip}
@@ -200,7 +216,11 @@ export default function UserProfilePage() {
                                 title={`Tip ${tipValue} USDC`}
                               >
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024" alt="USDC" className="w-5 h-5" />
+                                <img
+                                  src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=024"
+                                  alt="USDC"
+                                  className="w-5 h-5"
+                                />
                                 <span>Tip {tipValue}</span>
                               </button>
                             )}
@@ -235,15 +255,23 @@ export default function UserProfilePage() {
                         className="bg-white/5 py-4 px-2 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors cursor-pointer group flex-1 min-w-[80px]"
                         onClick={() => setModalType("followers")}
                       >
-                        <span className="block text-2xl md:text-3xl font-black text-secondary group-hover:scale-110 transition-transform">{followersCount}</span>
-                        <span className="text-[9px] uppercase opacity-40 font-bold group-hover:opacity-100 transition-opacity tracking-wide">Followers</span>
+                        <span className="block text-2xl md:text-3xl font-black text-secondary group-hover:scale-110 transition-transform">
+                          {followersCount}
+                        </span>
+                        <span className="text-[9px] uppercase opacity-40 font-bold group-hover:opacity-100 transition-opacity tracking-wide">
+                          Followers
+                        </span>
                       </div>
                       <div
                         className="bg-white/5 py-4 px-2 rounded-3xl border border-white/5 hover:bg-white/10 transition-colors cursor-pointer group flex-1 min-w-[80px]"
                         onClick={() => setModalType("following")}
                       >
-                        <span className="block text-2xl md:text-3xl font-black text-secondary group-hover:scale-110 transition-transform">{followingCount}</span>
-                        <span className="text-[9px] uppercase opacity-40 font-bold group-hover:opacity-100 transition-opacity tracking-wide">Following</span>
+                        <span className="block text-2xl md:text-3xl font-black text-secondary group-hover:scale-110 transition-transform">
+                          {followingCount}
+                        </span>
+                        <span className="text-[9px] uppercase opacity-40 font-bold group-hover:opacity-100 transition-opacity tracking-wide">
+                          Following
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -261,7 +289,9 @@ export default function UserProfilePage() {
                       {casts.length === 0 ? (
                         <div className="flex flex-col items-center justify-center p-24 text-center">
                           <div className="text-6xl mb-4 opacity-20">🪐</div>
-                          <p className="text-xl font-bold opacity-30 italic">No historical traces found on the chain.</p>
+                          <p className="text-xl font-bold opacity-30 italic">
+                            No historical traces found on the chain.
+                          </p>
                         </div>
                       ) : (
                         casts.map((cast: any) => (
@@ -274,7 +304,6 @@ export default function UserProfilePage() {
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -284,7 +313,15 @@ export default function UserProfilePage() {
         isOpen={!!modalType}
         onClose={() => setModalType(null)}
         title={modalType === "followers" ? "Followers" : "Following"}
-        names={modalType === "followers" ? (followersJson ? JSON.parse(followersJson) : []) : (followingJson ? JSON.parse(followingJson) : [])}
+        names={
+          modalType === "followers"
+            ? followersJson
+              ? JSON.parse(followersJson)
+              : []
+            : followingJson
+              ? JSON.parse(followingJson)
+              : []
+        }
       />
     </EnsGuard>
   );

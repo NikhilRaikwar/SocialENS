@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@heroicons/react": "~2.1.5",
+    "@next/swc-win32-x64-msvc": "^15.2.5",
     "@rainbow-me/rainbowkit": "2.2.9",
     "@react-native-async-storage/async-storage": "~2.2.0",
     "@scaffold-ui/components": "^0.1.8",
@@ -45,6 +46,7 @@
     "@trivago/prettier-plugin-sort-imports": "~4.3.0",
     "@types/node": "~18.19.50",
     "@types/react": "~19.0.7",
+    "@types/react-dom": "^19.0.3",
     "abitype": "1.0.6",
     "autoprefixer": "~10.4.20",
     "bgipfs": "~0.0.12",

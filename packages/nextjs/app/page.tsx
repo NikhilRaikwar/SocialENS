@@ -20,7 +20,6 @@ const Home: NextPage = () => {
           {/* Main Feed */}
           <div className="col-span-1 md:col-span-8 lg:col-span-6">
             <div className="flex flex-col gap-6">
-
               <Compose />
               <Feed />
             </div>
