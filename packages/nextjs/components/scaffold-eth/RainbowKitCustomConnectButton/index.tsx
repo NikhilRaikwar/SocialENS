@@ -8,9 +8,34 @@ import { WrongNetworkDropdown } from "./WrongNetworkDropdown";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Balance } from "@scaffold-ui/components";
 import { Address } from "viem";
+import { useAccount, useEnsAvatar, useEnsName } from "wagmi";
 import { useNetworkColor } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-eth";
+
+const AddressInfoWithEns = ({
+  address,
+  displayName,
+  ensAvatar,
+  blockExplorerAddressLink,
+}: {
+  address: Address;
+  displayName: string;
+  ensAvatar?: string;
+  blockExplorerAddressLink?: string;
+}) => {
+  const { data: sepoliaEnsName } = useEnsName({ address, chainId: 11155111 });
+  const { data: sepoliaEnsAvatar } = useEnsAvatar({ name: sepoliaEnsName || undefined, chainId: 11155111 });
+
+  return (
+    <AddressInfoDropdown
+      address={address}
+      displayName={sepoliaEnsName || displayName}
+      ensAvatar={sepoliaEnsAvatar || ensAvatar}
+      blockExplorerAddressLink={blockExplorerAddressLink}
+    />
+  );
+};
 
 /**
  * Custom Wagmi Connect Button (watch balance + custom design)
@@ -57,7 +82,7 @@ export const RainbowKitCustomConnectButton = () => {
                       {chain.name}
                     </span>
                   </div>
-                  <AddressInfoDropdown
+                  <AddressInfoWithEns
                     address={account.address as Address}
                     displayName={account.displayName}
                     ensAvatar={account.ensAvatar}

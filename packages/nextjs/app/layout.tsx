@@ -4,6 +4,7 @@ import "@scaffold-ui/components/styles.css";
 import { Analytics } from "@vercel/analytics/next";
 import { ScaffoldEthAppWithProviders } from "~~/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
+import { ScrollToTop } from "~~/components/ens-farcaster/ScrollToTop";
 import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
@@ -35,6 +36,7 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
       <body>
         <ThemeProvider enableSystem>
           <ScaffoldEthAppWithProviders>{children}</ScaffoldEthAppWithProviders>
+          <ScrollToTop />
         </ThemeProvider>
         <Analytics />
       </body>

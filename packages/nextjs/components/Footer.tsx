@@ -20,14 +20,6 @@ export const Footer = () => {
       <div>
         <div className="fixed flex justify-between items-center w-full z-10 p-4 bottom-0 left-0 pointer-events-none">
           <div className="flex flex-col md:flex-row gap-2 pointer-events-auto">
-            {nativeCurrencyPrice > 0 && (
-              <div>
-                <div className="btn btn-primary btn-sm font-normal gap-1 cursor-auto">
-                  <CurrencyDollarIcon className="h-4 w-4" />
-                  <span>{nativeCurrencyPrice.toFixed(2)}</span>
-                </div>
-              </div>
-            )}
             {isLocalNetwork && (
               <>
                 <Faucet />
@@ -42,13 +34,11 @@ export const Footer = () => {
         </div>
       </div>
       <div className="w-full">
-        <ul className="menu menu-horizontal w-full">
-          <div className="flex justify-center items-center gap-2 text-sm w-full">
-            <div className="text-center font-bold">SocialENS - 100% Decentralized</div>
-            <span>·</span>
-            <div>Built with ENS & Scaffold-ETH 2</div>
-          </div>
-        </ul>
+        <div className="flex justify-center items-center gap-2 text-[10px] uppercase tracking-[0.2em] opacity-30 font-bold py-4">
+          <span>SocialENS v1.0</span>
+          <span>•</span>
+          <span>Sepolia</span>
+        </div>
       </div>
     </div>
   );
